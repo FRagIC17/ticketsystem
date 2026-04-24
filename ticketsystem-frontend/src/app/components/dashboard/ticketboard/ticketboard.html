@@ -1,0 +1,100 @@
+<section class="ticketboard-layout fixed-grid has-5-cols">
+    <div class="grid is-gap-0">
+        <aside class="cell is-col-span-1 dashboard-sidebar">
+            <app-navbar></app-navbar>
+        </aside>
+
+        <main class="cell is-col-span-4 ticketboard-main">
+            <div class="content">
+                <h1 class="title is-3 pt-4">Ticket Board</h1>
+            </div>
+            <div class="ticketboard-content pr-6">
+                <div class="ticket-navbar is-flex mb-4 is-justify-content-space-between">
+                    <div class="is-flex">
+                        <aside>
+                            <p>Status</p>
+                            <div class="select mr-4">
+                                <select [(ngModel)]="selectedStatus" name="status" id="status">
+                                    <option value="">None</option>
+                                    <option value="Open">Open</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+                        </aside>
+                        <aside>
+                            <p>Priority</p>
+                            <div class="select">
+                                <select [(ngModel)]="selectedPriority" name="priority" id="priority">
+                                    <option value="">None</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                        </aside>
+                    </div>
+                    <div>
+                        <button class="button" (click)="createTicket()">Create Ticket</button>
+                    </div>
+                </div>
+
+                <div class="form-box is-flex is-justify-content-space-between" (click)="onTicketClick(ticket)"
+                    *ngFor="let ticket of testTickets">
+                    <h2>{{ ticket.title }}</h2>
+                    <div class="is-flex">
+                        <p>Status: {{ ticket.status }}</p>
+                        <div class="circle ml-4" [style.backgroundColor]="setStatusColor(ticket)"></div>
+                    </div>
+                    <div class="is-flex">
+                        <p>Priority: {{ ticket.priority }}</p>
+                        <div class="circle ml-4" [style.backgroundColor]="setPriorityColor(ticket)"></div>
+                    </div>
+                    <p>Created At: {{ ticket.createdAt | date }}</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="ticket-modal">
+        <div class="modal-background" (click)="closeTicketModal()"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edit Ticket</p>
+            </header>
+            <section class="modal-card-body">
+                <p class="mb-1 is-size-4 is-flex has-text-white">Title</p>
+                <p type="text" class="mb-3 is-size-5" placeholder="Title" id="modal-ticket-title"></p>
+                <p class="mb-1 is-size-4 is-flex has-text-white">Name</p>
+                <p type="text" class="mb-3 is-size-5" placeholder="Name" id="modal-ticket-name"></p>
+                <p class="mb-1 is-size-4 is-flex has-text-white">Email</p>
+                <p type="email" class="mb-3 is-size-5" placeholder="Email" id="modal-ticket-email"></p>
+                <p class="mb-1 is-size-4 is-flex has-text-white">Status</p>
+                <div class="select mb-3">
+                    <select name="status" id="modal-ticket-status">
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <p class="mb-1 is-size-4 is-flex has-text-white">Priority</p>
+                <div class="select mb-3">
+                    <select name="priority" id="modal-ticket-priority">
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <p class="mb-1 is-size-4 is-flex has-text-white">Description</p>
+                <textarea type="text" class="textarea is-large mb-3 is-size-5" placeholder="Description"
+                    id="modal-ticket-description"></textarea>
+            </section>
+            <footer class="modal-card-foot">
+                <div class="buttons">
+                    <button class="button is-success" (click)="updateTicket()">Save changes</button>
+                    <button class="button" (click)="closeTicketModal()">Cancel</button>
+                </div>
+            </footer>
+        </div>
+    </div>
+</section>
