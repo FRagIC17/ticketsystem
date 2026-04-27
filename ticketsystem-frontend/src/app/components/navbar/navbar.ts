@@ -28,8 +28,8 @@ export class Navbar {
     this.router.navigate(['/my-settings']);
   }
 
-  myFAQ() {
-    // Implement navigation to FAQ page
-    this.router.navigate(['/faq']);
+  myKnowledgeBase() {
+    // Implement navigation to Knowledge Base page
+    this.router.navigate(['/knowledge-base']);
   }
 }

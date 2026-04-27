@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Navbar, CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
