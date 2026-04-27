@@ -1,32 +1,24 @@
-<section class="ticketboard-layout fixed-grid has-5-cols">
-    <div class="grid is-gap-0">
-        <aside class="cell is-col-span-1 dashboard-sidebar">
-            <app-navbar></app-navbar>
-        </aside>
-
-        <main class="cell is-col-span-4 ticketboard-main">
-            <div class="content">
-                <h1 class="title is-3 pt-4">Create Ticket</h1>
-                <p><a href="/my-tickets">&larr;</a> Go Back</p>
-            </div>
-            <div class="form-box">
-                <input type="text" placeholder="Your Name" class="input mb-3" id="create-ticket-name">
-                <input type="email" placeholder="Your Email" class="input mb-3" id="create-ticket-email">
-                <input type="text" placeholder="Title" class="input mb-3" id="create-ticket-title">
-                <textarea placeholder="Description" class="textarea mb-3" id="create-ticket-description"></textarea>
-                <p>Priority</p>
-                <div class="select mb-3">
-                    <select name="priority" id="create-ticket-priority">
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
-                    </select>
-                </div>
-                <div>
-                    <button class="button">Submit Ticket</button>
-                    <button class="button" (click)="goBack()">Cancel</button>
-                </div>
-            </div>
-        </main>
+<main class="cell is-col-span-4 ticketboard-main">
+    <div class="content">
+        <h1 class="title is-3 pt-4">Create Ticket</h1>
+        <p><a href="/my-tickets">&larr;</a> Go Back</p>
     </div>
-</section>
+    <div class="form-box">
+        <input type="text" placeholder="Your Name" class="input mb-3" id="create-ticket-name">
+        <input type="email" placeholder="Your Email" class="input mb-3" id="create-ticket-email">
+        <input type="text" placeholder="Title" class="input mb-3" id="create-ticket-title">
+        <textarea placeholder="Description" class="textarea mb-3" id="create-ticket-description"></textarea>
+        <p>Priority</p>
+        <div class="select mb-3">
+            <select name="priority" id="create-ticket-priority">
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+        </div>
+        <div>
+            <button class="button">Submit Ticket</button>
+            <button class="button" (click)="goBack()">Cancel</button>
+        </div>
+    </div>
+</main>
