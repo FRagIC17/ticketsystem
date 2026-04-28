@@ -8,9 +8,18 @@
         <input type="text" placeholder="Title" class="input mb-3" id="create-ticket-title">
         <p>Description</p>
         <textarea placeholder="Description" class="textarea mb-3" id="create-ticket-description"></textarea>
+        <p>Assigned To</p>
+        <div class="select">
+            <select [(ngModel)]="selectedUser" name="assignedTo">
+                <option value="">Select User</option>
+                <option>User 1</option>
+                <option>User 2</option>
+                <option>User 3</option>
+            </select>
+        </div>
         <aside>
             <p>Status</p>
-            <div class="select mr-4">
+            <div class="select">
                 <select [(ngModel)]="selectedStatus" name="status">
                     <option value="">Select Status</option>
                     <option *ngFor="let status of statuses" [value]="status.name">

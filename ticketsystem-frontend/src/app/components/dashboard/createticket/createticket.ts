@@ -18,6 +18,7 @@ export class Createticket {
 
   selectedPriority: string = '';
   selectedStatus: string = '';
+  selectedUser: string = '';
 
   priorities: any[] = [];
   statuses: any[] = [];
