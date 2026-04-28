@@ -1,4 +1,4 @@
-CREATE DATABASE ticketsystem_db;
+#CREATE DATABASE ticketsystem_db;
 USE ticketsystem_db;
 -- =========================================
 -- USERS
