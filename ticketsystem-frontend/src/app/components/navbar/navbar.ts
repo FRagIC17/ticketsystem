@@ -16,20 +16,16 @@ export class Navbar {
     this.router.navigate(['/']);
   }
 
-  myTickets() {
-    this.router.navigate(['/my-tickets']);
-  }
-
-  myUsers() {
-    this.router.navigate(['/my-users']);
-  }
-
-  mySettings() {
-    this.router.navigate(['/my-settings']);
+  createTicket() {
+    this.router.navigate(['/create-ticket']);
   }
 
   myKnowledgeBase() {
     // Implement navigation to Knowledge Base page
     this.router.navigate(['/knowledge-base']);
+  }
+
+  Contact() {
+    this.router.navigate(['/contact']);
   }
 }

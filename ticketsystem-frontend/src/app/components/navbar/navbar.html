@@ -1,11 +1,26 @@
-<nav class="menu p-4">
-    <p class="menu-label">Ticket System</p>
-    <ul class="menu-list">
-        <li><button (click)="myDashboard()">Dashboard</button></li>
-        <li><button (click)="myTickets()">Tickets</button></li>
-        <!-- <li><button (click)="myUsers()">Users</button></li> -->
-        <!-- <li><button (click)="mySettings()">Settings</button></li> -->
-        <li><button (click)="myKnowledgeBase()">Knowledge Base</button></li>
-        <!-- <li><button (click)="myLogout()">Logout</button></li> -->
-    </ul>
+<nav class="navbar is-dark sidebar-navbar" role="navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item has-text-weight-bold is-size-4">
+      Ticket System
+    </a>
+  </div>
+
+  <div class="navbar-menu is-active">
+    <div class="navbar-start">
+      <a class="navbar-item" (click)="myDashboard()">
+        Dashboard
+      </a>
+
+      <a class="navbar-item" (click)="createTicket()">
+        Create Ticket
+      </a>
+
+      <a class="navbar-item" (click)="myKnowledgeBase()">
+        Knowledge Base
+      </a>
+      <a class="navbar-item" (click)="Contact()">
+        Contact
+      </a>
+    </div>
+  </div>
 </nav>
