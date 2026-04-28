@@ -4,14 +4,62 @@
 		<p class="subtitle is-6">Select an action from the left navigation.</p>
 	</div>
 
-	<div class="column">
-		<div class="form-box">
-			<p>Latest Tickets:</p>
+	<div class="ticketboard-content pr-6">
+
+		<div class="ticket-navbar is-flex mb-4 is-justify-content-space-between">
+			<div class="is-flex">
+
+				<!-- Status Dropdown -->
+				<aside class="mr-6">
+					<p class="mb-1">Status</p>
+					<div class="select">
+						<select [(ngModel)]="selectedStatus" (change)="sortTicketsByStatus(selectedStatus)">
+							<option value="">All Statuses</option>
+							<option *ngFor="let status of statuses" [value]="getValue(status)">
+								{{ getDisplayName(status) }}
+							</option>
+						</select>
+					</div>
+				</aside>
+
+				<!-- Priority Dropdown -->
+				<aside>
+					<p class="mb-1">Priority</p>
+					<div class="select">
+						<select [(ngModel)]="selectedPriority" (change)="sortTicketsByPriority(selectedPriority)">
+							<option value="">All Priorities</option>
+							<option *ngFor="let priority of priorities" [value]="getValue(priority)">
+								{{ getDisplayName(priority) }}
+							</option>
+						</select>
+					</div>
+				</aside>
+
+			</div>
 		</div>
-	</div>
-	<div class="column is-half">
-		<div class="form-box amount-of-tickets">
-			<p>Amount of Tickets: {{ amountOfTickets }}</p>
+
+		<div class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of testTickets"
+			(click)="onTicketClick(ticket)">
+			<h2>{{ ticket.title }}</h2>
+
+			<div class="is-flex">
+				<p>Status:</p>
+				<div class="tag ml-4" [style.backgroundColor]="getStatusStyles(ticket).background"
+					[style.borderColor]="getStatusStyles(ticket).border">
+					{{ ticket.status }}
+				</div>
+			</div>
+
+			<div class="is-flex">
+				<p>Priority:</p>
+				<div class="tag ml-4" [style.backgroundColor]="getPriorityStyles(ticket).background"
+					[style.borderColor]="getPriorityStyles(ticket).border">
+					{{ ticket.priority }}
+				</div>
+			</div>
+
+			<p>Created At: {{ ticket.createdAt | date }}</p>
 		</div>
+
 	</div>
 </main>
