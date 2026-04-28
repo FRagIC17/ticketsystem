@@ -9,14 +9,13 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Ticket;
 
-@Path("/api")
+@Path("/api/tickets")
 public class TicketEndpoint {
     
     @Inject
     EntityManager em;
 
     @GET
-    @Path("/tickets")
     public Response getTickets() {
         try {
             TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t", Ticket.class);
@@ -29,7 +28,7 @@ public class TicketEndpoint {
     }
 
     @GET
-    @Path("/tickets/sorted-by-priority")
+    @Path("/sorted-by-priority")
     public Response getTicketsByPriority(@QueryParam("priority") int priorityId) {
         try {
             TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t WHERE t.priority_id = :priority_id", Ticket.class);
@@ -42,7 +41,7 @@ public class TicketEndpoint {
     }
 
     @GET
-    @Path("/tickets/sorted-by-status")
+    @Path("/sorted-by-status")
     public Response getTicketsByStatus(@QueryParam("status") int statusId) {
         try {
             TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t WHERE t.status_id = :status_id", Ticket.class);
