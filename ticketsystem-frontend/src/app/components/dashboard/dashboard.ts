@@ -18,16 +18,15 @@ export class Dashboard {
 
   tickets: any[] = [];
   testTickets: any[] = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com', title: 'Ticket 1', description: 'Description for Ticket 1', status: 'Closed', priority: 'High', createdAt: new Date() },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', title: 'Ticket 2', description: 'Description for Ticket 2', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
-    { id: 3, name: 'Bob Johnson', email: 'bob.johnson@example.com', title: 'Ticket 3', description: 'Description for Ticket 3', status: 'Closed', priority: 'Low', createdAt: new Date() },
-    { id: 4, name: 'Alice Brown', email: 'alice.brown@example.com', title: 'Ticket 4', description: 'Description for Ticket 4', status: 'Open', priority: 'High', createdAt: new Date() },
-    { id: 5, name: 'Charlie Wilson', email: 'charlie.wilson@example.com', title: 'Ticket 5', description: 'Description for Ticket 5', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
-    { id: 6, name: 'Diana Davis', email: 'diana.davis@example.com', title: 'Ticket 6', description: 'Description for Ticket 6', status: 'Open', priority: 'Low', createdAt: new Date() },
-    { id: 7, name: 'Eve Green', email: 'eve.green@example.com', title: 'Ticket 7', description: 'Description for Ticket 7', status: 'Closed', priority: 'High', createdAt: new Date() },
-    { id: 8, name: 'Frank White', email: 'frank.white@example.com', title: 'Ticket 8', description: 'Description for Ticket 8', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
-    { id: 9, name: 'Grace Black', email: 'grace.black@example.com', title: 'Ticket 9', description: 'Description for Ticket 9', status: 'Open', priority: 'Low', createdAt: new Date() },
-    { id: 10, name: 'Henry Grey', email: 'henry.grey@example.com', title: 'Ticket 10', description: 'Description for Ticket 10', status: 'Closed', priority: 'High', createdAt: new Date() },
+    { id: 1, name: 'John Doe', email: 'john.doe@example.com', category: 'Support', title: 'Ticket 1', description: 'Description for Ticket 1', status: 'Closed', priority: 'High', createdAt: new Date() },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', category: 'Sales', title: 'Ticket 2', description: 'Description for Ticket 2', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
+    { id: 3, name: 'Bob Johnson', email: 'bob.johnson@example.com', category: 'Marketing', title: 'Ticket 3', description: 'Description for Ticket 3', status: 'Closed', priority: 'Low', createdAt: new Date() },
+    { id: 4, name: 'Alice Brown', email: 'alice.brown@example.com', category: 'IT', title: 'Ticket 4', description: 'Description for Ticket 4', status: 'Open', priority: 'High', createdAt: new Date() },
+    { id: 5, name: 'Charlie Wilson', email: 'charlie.wilson@example.com', category: 'HR', title: 'Ticket 5', description: 'Description for Ticket 5', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
+    { id: 7, name: 'Eve Green', email: 'eve.green@example.com', category: 'Finance', title: 'Ticket 7', description: 'Description for Ticket 7', status: 'Closed', priority: 'High', createdAt: new Date() },
+    { id: 8, name: 'Frank White', email: 'frank.white@example.com', category: 'IT', title: 'Ticket 8', description: 'Description for Ticket 8', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
+    { id: 9, name: 'Grace Black', email: 'grace.black@example.com', category: 'Marketing', title: 'Ticket 9', description: 'Description for Ticket 9', status: 'Open', priority: 'Low', createdAt: new Date() },
+    { id: 10, name: 'Henry Grey', email: 'henry.grey@example.com', category: 'Sales', title: 'Ticket 10', description: 'Description for Ticket 10', status: 'Closed', priority: 'High', createdAt: new Date() },
   ];
   statuses: any[] = [];
   priorities: any[] = [];

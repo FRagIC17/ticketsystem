@@ -1,4 +1,4 @@
-<main class="cell is-col-span-4 ticketboard-main">
+<main class="cell is-col-span-4 ticketboard-main" id="create-ticket">
     <div class="content">
         <h1 class="title is-3 pt-4">Create Ticket</h1>
         <p><a href="/">&larr;</a> Go Back</p>
@@ -17,6 +17,17 @@
                 <option>User 3</option>
             </select>
         </div>
+        <aside>
+            <p>Category</p>
+            <div class="select">
+                <select [(ngModel)]="selectedCategory" name="category">
+                    <option value="">Select Category</option>
+                    <option *ngFor="let category of categories" [value]="category.name">
+                        {{ category.name }}
+                    </option>
+                </select>
+            </div>
+        </aside>
         <aside>
             <p>Status</p>
             <div class="select">
