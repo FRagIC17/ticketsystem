@@ -10,7 +10,7 @@ import { Contact } from './components/contact/contact';
 export const routes: Routes = [
     {path: '', component: MainLayout, children: [
         {path: '', component: Dashboard},
-        {path: 'ticket/:id', component: Selectedticket},
+        {path: 'tickets/:id', component: Selectedticket},
         {path: 'knowledge-base', component: Knowledgebase},
         {path: 'create-ticket', component: Createticket},
         {path: 'contact', component: Contact}

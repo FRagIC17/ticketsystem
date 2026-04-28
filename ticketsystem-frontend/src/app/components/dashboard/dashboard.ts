@@ -111,7 +111,7 @@ export class Dashboard {
 
   onTicketClick(ticket: any) {
     this.selectedTicket = ticket;
-    this.router.navigate(['/ticket', ticket.id]);
+    this.router.navigate(['/tickets', ticket.id]);
   }
 
   getStatusStyles(ticket: any) {
