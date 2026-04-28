@@ -1,0 +1,41 @@
+<main class="cell is-col-span-4 ticketboard-main">
+    <div class="content">
+        <h1 class="title is-3 pt-4">Create Ticket</h1>
+        <p><a href="/my-tickets">&larr;</a> Go Back</p>
+    </div>
+    <div class="form-box">
+        <p>Title</p>
+        <input type="text" placeholder="Title" class="input mb-3" id="create-ticket-title">
+        <p>Description</p>
+        <textarea placeholder="Description" class="textarea mb-3" id="create-ticket-description"></textarea>
+        <aside>
+            <p>Status</p>
+            <div class="select mr-4">
+                <select [(ngModel)]="selectedStatus" name="status">
+                    <option value="">Select Status</option>
+                    <option *ngFor="let status of statuses" [value]="status.name">
+                        {{ status.name }}
+                    </option>
+                </select>
+            </div>
+        </aside>
+
+        <aside>
+            <p>Priority</p>
+            <div class="select">
+                <select [(ngModel)]="selectedPriority" name="priority"
+                    (Change)="sortTicketsByPriority(selectedPriority)">
+                    <option value="">Select Priority</option>
+                    <option *ngFor="let priority of priorities" [value]="priority.name">
+                        {{ priority.name }}
+                    </option>
+                </select>
+            </div>
+        </aside>
+        <br>
+        <div>
+            <button class="button">Submit Ticket</button>
+            <button class="button" (click)="goBack()">Cancel</button>
+        </div>
+    </div>
+</main>
