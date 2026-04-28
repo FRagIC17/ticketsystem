@@ -4,7 +4,12 @@
 html, body {
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
+}
+
+nav {
+    background-color: #333;
+    color: white;
+    padding: 10px;
 }
 
 /* Default (light) theme */
@@ -24,20 +29,67 @@ html, body {
     }
 }
 
-/* Optional manual override if you set data-theme on body */
-body[data-theme="light"] .form-box {
-    background-color: #f0f0f0;
-    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.1);
+.dashboard-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-body[data-theme="dark"] .form-box {
-    background-color: #313246;
-    box-shadow: 6px 6px 12px rgba(255, 255, 255, 0.1);
-}
-
-.circle {
-  height: 20px;
-  width: 20px;
-  background-color: white;
+.tag {
+  border: 3px solid;
+  border-color: inherit;
   border-radius: 10px;
+  padding: 8px 12px;
+}
+
+/* navbar css */
+
+.ticketboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left side */
+.dashboard-sidebar {
+  width: 260px;
+  min-height: 100%;
+}
+
+/* Bulma navbar converted into sidebar */
+.sidebar-navbar {
+  height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 1rem;
+}
+
+/* Stack brand + items vertically */
+.sidebar-navbar .navbar-brand {
+  width: 100%;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  margin-bottom: 1rem;
+}
+
+.sidebar-navbar .navbar-menu,
+.sidebar-navbar .navbar-start {
+  display: flex !important;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sidebar-navbar .navbar-item {
+  width: 100%;
+  padding: 1rem 1.5rem;
+}
+
+.sidebar-navbar .navbar-item:hover {
+  background: rgba(255,255,255,.08);
+}
+
+/* Right content fills remaining space */
+.ticketboard-main {
+  flex: 1;
+  padding: 2rem;
 }
