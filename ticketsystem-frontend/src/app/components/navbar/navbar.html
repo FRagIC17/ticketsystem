@@ -23,4 +23,14 @@
       </a>
     </div>
   </div>
+  <div>
+    <button class="button" (click)="switchToUserView()" *ngIf="!sharedVariables.isUserView">
+      switch to user view
+    </button>
+    <button>
+        <button class="button" (click)="switchToUserView()" *ngIf="sharedVariables.isUserView">
+            switch to supporter view
+        </button>
+    </button>
+  </div>
 </nav>

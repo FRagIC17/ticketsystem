@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule, NgIf } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { SharedVariables } from '../../SharedVariables/SharedVariables';
+
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +12,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private router: Router, public sharedVariables: SharedVariables) { }
+
+
+  switchToUserView() {
+    this.sharedVariables.isUserView = !this.sharedVariables.isUserView;
+  }
 
   myDashboard() {
     this.router.navigate(['/']);
