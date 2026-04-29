@@ -13,7 +13,7 @@ public class TicketView {
     @Column(name="title") public String title;
     @Column(name="description") public String description;
     @Column(name="created_by") public String createdBy;
-    @Column(name="assigned_to") public String AssignedTo;
+    @Column(name="assigned_to") public String assignedTo;
     @Column(name="category") public String category;
     @Column(name="status") public String status;
     @Column(name="priority") public String priority;
@@ -21,7 +21,4 @@ public class TicketView {
     @Column(name="updated_at") public LocalDateTime updatedAt;
     @Column(name="closed_at") public LocalDateTime closedAt;
     @Column(name="deleted_at") public LocalDateTime deletedAt;
-    @Column(name="latest_comment") public String latestComment;
-    @Column(name="comment_by") public String commentBy;
-    @Column(name="comment_at") public LocalDateTime commentAt;
 }

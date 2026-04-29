@@ -1,3 +1,5 @@
+USE ticketsystem_db;
+
 INSERT INTO users (first_name, last_name, email) VALUES
 ('Alice', 'Johnson', 'alice.johnson@company.com'),
 ('Bob', 'Smith', 'bob.smith@company.com'),
@@ -24,32 +26,40 @@ INSERT INTO ticket_comments (comment_text, created_by) VALUES
 ('Issue resolved after reinstalling the software.', 'Emma Davis'),
 ('Still waiting for the replacement hardware.', 'Frank Miller');
 
-INSERT INTO ticket 
-    (created_by, assigned_to, title, description, comments_id, status_id, priority_id, category_id)
+INSERT INTO ticket
+(created_by, assigned_to, title, description, status_id, priority_id, category_id)
 VALUES
-('Alice Johnson', 'Bob Smith', 'Laptop won''t boot after update', 
- 'After installing the latest Windows update, my laptop is stuck on the boot screen.', 1, 1, 3, 1),
+(1, 1,
+'Laptop won''t boot after update',
+'After installing the latest Windows update, my laptop is stuck on the boot screen.', 1, 3, 1),
 
-('Bob Smith', 'Carol Williams', 'Outlook keeps crashing', 
- 'Outlook 365 crashes every time I try to open an email with attachment.', 2, 2, 2, 2),
+(2, 2,
+'Outlook keeps crashing',
+'Outlook 365 crashes every time I try to open an email with attachment.', 2, 2, 2),
 
-('Carol Williams', NULL, 'Cannot connect to VPN', 
- 'VPN connection fails with error 809. Tried on multiple networks.', NULL, 1, 4, 3),
+(3, NULL,
+'Cannot connect to VPN',
+'VPN connection fails with error 809. Tried on multiple networks.', 1, 4, 3),
 
-('David Brown', 'Emma Davis', 'Printer not visible on network', 
- 'The office printer suddenly disappeared from the network. Other people can still print.', 3, 2, 2, 1),
+(4, 3,
+'Printer not visible on network',
+'The office printer suddenly disappeared from the network. Other people can still print.', 2, 2, 1),
 
-('Emma Davis', 'Bob Smith', 'Excel formulas not calculating', 
- 'Some formulas in my Excel file stopped working after the recent Office update.', NULL, 3, 2, 2),
+(5, 1,
+'Excel formulas not calculating',
+'Some formulas in my Excel file stopped working after the recent Office update.', 3, 2, 2),
 
-('Frank Miller', 'Henry Moore', 'Internet extremely slow in meeting room', 
- 'Download speed is less than 5 Mbps in meeting room B, while other rooms are fine.', 4, 1, 3, 3),
+(6, 4,
+'Internet extremely slow in meeting room',
+'Download speed is less than 5 Mbps in meeting room B, while other rooms are fine.', 1, 3, 3),
 
-('Grace Wilson', 'Carol Williams', 'Blue screen of death on desktop PC', 
- 'Getting BSOD with error IRQL_NOT_LESS_OR_EQUAL randomly.', 5, 2, 4, 1),
+(7, 2,
+'Blue screen of death on desktop PC',
+'Getting BSOD with error IRQL_NOT_LESS_OR_EQUAL randomly.', 2, 4, 1),
 
-('Henry Moore', NULL, 'Request for new monitor', 
- 'My current monitor has dead pixels and is 5 years old. Requesting a replacement.', NULL, 1, 1, 1);
+(8, NULL,
+'Request for new monitor',
+'My current monitor has dead pixels and is 5 years old. Requesting a replacement.', 1, 1, 4);
  
 INSERT INTO knowledge_base
 ( title, slug, article_body, summary, category, tags, created_by, updated_by, is_published )
