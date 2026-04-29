@@ -10,12 +10,12 @@
 			<div class="is-flex">
 
 				<!-- Status Dropdown -->
-				<aside class="mr-6">
-					<p class="mb-1">Status</p>
+				<aside class="mr-6 is-flex is-flex-direction-column">
+					<label class="mb-1" for="status-select">Status</label>
 					<div class="select">
-						<select [(ngModel)]="selectedStatus" (change)="sortTicketsByStatus(selectedStatus)">
-							<option value="">All Statuses</option>
-							<option *ngFor="let status of statuses" [value]="getValue(status)">
+						<select [(ngModel)]="selectedStatus" (change)="sortTicketsByStatus(selectedStatus)" id="status-select">
+							<option value="">Statuses</option>
+							<option *ngFor="let status of statuses()" [value]="getValue(status)">
 								{{ getDisplayName(status) }}
 							</option>
 						</select>
@@ -23,12 +23,12 @@
 				</aside>
 
 				<!-- Priority Dropdown -->
-				<aside>
-					<p class="mb-1">Priority</p>
+				<aside class="is-flex is-flex-direction-column">
+					<label class="mb-1 " for="priority-select">Priority</label>
 					<div class="select">
-						<select [(ngModel)]="selectedPriority" (change)="sortTicketsByPriority(selectedPriority)">
-							<option value="">All Priorities</option>
-							<option *ngFor="let priority of priorities" [value]="getValue(priority)">
+						<select [(ngModel)]="selectedPriority" (change)="sortTicketsByPriority(selectedPriority)" id="priority-select">
+							<option value="">Priorities</option>
+							<option *ngFor="let priority of priorities()" [value]="getValue(priority)">
 								{{ getDisplayName(priority) }}
 							</option>
 						</select>
@@ -38,9 +38,9 @@
 			</div>
 		</div>
 
-		<div class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of testTickets"
+		<div class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of tickets()"
 			(click)="onTicketClick(ticket)">
-			<h2>{{ ticket.title }}</h2>
+			<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
 
 			<div class="is-flex">
 				<p>Category:</p>
