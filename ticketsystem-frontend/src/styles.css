@@ -38,7 +38,6 @@ nav {
 .dashboard-sidebar {
     display: flex;
     flex-direction: column;
-    height: 100vh;
 }
 
 .tag {
@@ -61,17 +60,20 @@ nav {
 .ticketboard-layout {
   display: flex;
   min-height: 100vh;
+  align-items: stretch;
 }
 
 /* Left side */
 .dashboard-sidebar {
   width: 260px;
-  min-height: 100%;
+  display: flex;
+  align-self: stretch;
 }
 
 /* Bulma navbar converted into sidebar */
 .sidebar-navbar {
-  height: 100vh;
+  height: 100%;
+  min-height: 100%;
   width: 100%;
   flex-direction: column;
   align-items: stretch;
