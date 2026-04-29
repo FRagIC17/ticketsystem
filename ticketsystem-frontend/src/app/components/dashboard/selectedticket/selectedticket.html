@@ -1,21 +1,50 @@
-<p><a href="/">&larr;</a> Back</p>
-<h1 class="title is-3">{{ ticket.title }}</h1>
-<div class="form-box">
-    <div class="is-flex">
-        <p>Status:</p>
-        <div class="tag ml-4" [style.backgroundColor]="getStatusStyles(ticket).background"
-            [style.borderColor]="getStatusStyles(ticket).border">
-            {{ ticket.status }}
+<section class="selected-ticket-page" *ngIf="ticket() as currentTicket; else noTicket">
+    <p class="mb-3"><a href="/">&larr; Go Back</a></p>
+    <h1 class="title is-3 selected-ticket-title">{{ currentTicket.title }}</h1>
+
+    <main class="selected-ticket-layout columns is-variable is-5 is-multiline">
+        <div class="column is-8-desktop is-12-tablet">
+            <section class="form-box selected-ticket-main-card" [style.borderColor]="getPriorityStyles(currentTicket).border">
+                <div class="ticket-meta-row">
+                    <p class="has-text-weight-semibold">Category:</p>
+                    <div>{{ currentTicket.category }}</div>
+                </div>
+
+                <div class="ticket-meta-row">
+                    <p class="has-text-weight-semibold">Status:</p>
+                    <div class="tag ml-4" [style.backgroundColor]="getStatusStyles(currentTicket).background"
+                        [style.borderColor]="getStatusStyles(currentTicket).border">
+                        {{ currentTicket.status }}
+                    </div>
+                </div>
+
+                <div class="ticket-meta-row">
+                    <p class="has-text-weight-semibold">Priority:</p>
+                    <div class="tag ml-4" [style.backgroundColor]="getPriorityStyles(currentTicket).background"
+                        [style.borderColor]="getPriorityStyles(currentTicket).border">
+                        {{ currentTicket.priority }}
+                    </div>
+                </div>
+
+                <div class="selected-ticket-description-box">
+                    <label for="ticket-description" class="title is-5 mb-2">Description</label>
+                    <p id="ticket-description">{{ currentTicket.description }}</p>
+                </div>
+            </section>
         </div>
-    </div>
-    <div class="is-flex">
-        <p>Priority:</p>
-        <div class="tag ml-4" [style.backgroundColor]="getPriorityStyles(ticket).background"
-            [style.borderColor]="getPriorityStyles(ticket).border">
-            {{ ticket.priority }}
-        </div>
-    </div>
-    <p>Created At: {{ ticket.createdAt | date }}</p>
-    <p>Assigned To: {{ ticket.assignedTo }}</p>
-    <p>{{ ticket.description }}</p>
-</div>
+
+        <aside class="column is-4-desktop is-12-tablet">
+            <section class="form-box selected-ticket-aside">
+                <p><span class="has-text-weight-semibold">Created At:</span> {{ currentTicket.createdAt | date }}</p>
+                <p><span class="has-text-weight-semibold">Assigned To:</span> {{ currentTicket.assignedTo }}</p>
+            </section>
+        </aside>
+    </main>
+</section>
+
+<ng-template #noTicket>
+    <section class="selected-ticket-page">
+        <p class="mb-3"><a href="/">&larr; Go Back</a></p>
+        <div class="notification is-warning is-light">No ticket found for this ID.</div>
+    </section>
+</ng-template>

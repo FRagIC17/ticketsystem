@@ -1,0 +1,51 @@
+.selected-ticket-page {
+	width: 100%;
+	margin: 0 auto;
+	padding: 1rem 1rem 2rem;
+}
+
+.selected-ticket-title {
+	margin-bottom: 1rem;
+}
+
+.selected-ticket-layout {
+	margin-top: 0.25rem;
+}
+
+.selected-ticket-main-card,
+.selected-ticket-aside {
+	margin: 0;
+}
+
+.ticket-meta-row {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.75rem;
+	margin-bottom: 0.85rem;
+}
+
+.selected-ticket-description-box {
+	margin-top: 1rem;
+	padding: 1rem;
+	border-radius: 8px;
+}
+
+.selected-ticket-description-box p {
+	white-space: pre-wrap;
+	line-height: 1.45;
+}
+
+.selected-ticket-aside p {
+	margin-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+	.selected-ticket-page {
+		padding: 1rem 0.5rem 1.5rem;
+	}
+
+	.ticket-meta-row {
+		flex-wrap: wrap;
+	}
+}
