@@ -11,9 +11,9 @@
         <aside>
             <p>created By</p>
             <div class="select">
-                <select [(ngModel)]="selectedUser" name="createdBy">
+                <select [(ngModel)]="selectedUserId" name="createdBy">
                     <option value="">Select User</option>
-                    <option *ngFor="let user of users()" [value]="user.firstName + ' ' + user.lastName">
+                    <option *ngFor="let user of users()" [value]="user.id">
                         {{ user.firstName }} {{ user.lastName }}
                     </option>
                 </select>
@@ -22,9 +22,9 @@
         <aside>
             <p>Category</p>
             <div class="select">
-                <select [(ngModel)]="selectedCategory" name="category">
+                <select [(ngModel)]="selectedCategoryId" name="category">
                     <option value="">Select Category</option>
-                    <option *ngFor="let category of categories()" [value]="category.name">
+                    <option *ngFor="let category of categories()" [value]="category.id">
                         {{ category.name }}
                     </option>
                 </select>
@@ -33,9 +33,9 @@
         <aside>
             <p>Status</p>
             <div class="select">
-                <select [(ngModel)]="selectedStatus" name="status">
+                <select [(ngModel)]="selectedStatusId" name="status">
                     <option value="">Select Status</option>
-                    <option *ngFor="let status of statuses()" [value]="status.name">
+                    <option *ngFor="let status of statuses()" [value]="status.id">
                         {{ status.name }}
                     </option>
                 </select>
@@ -45,10 +45,9 @@
         <aside>
             <p>Priority</p>
             <div class="select">
-                <select [(ngModel)]="selectedPriority" name="priority"
-                    (Change)="sortTicketsByPriority(selectedPriority)">
+                <select [(ngModel)]="selectedPriorityId" name="priority">
                     <option value="">Select Priority</option>
-                    <option *ngFor="let priority of priorities()" [value]="priority.name">
+                    <option *ngFor="let priority of priorities()" [value]="priority.id">
                         {{ priority.name }}
                     </option>
                 </select>
@@ -57,9 +56,9 @@
         <aside>
             <p>Assigned To</p>
             <div class="select" *ngIf="!sharedVariables.isUserView">
-                <select [(ngModel)]="selectedItSupporter" name="assignedTo">
+                <select [(ngModel)]="selectedItSupporterId" name="assignedTo">
                     <option value="">Select Supporter</option>
-                    <option *ngFor="let itSupporter of itSupporters()" [value]="itSupporter.firstName + ' ' + itSupporter.lastName">
+                    <option *ngFor="let itSupporter of itSupporters()" [value]="itSupporter.id">
                         {{ itSupporter.firstName }} {{ itSupporter.lastName }}
                     </option>
                 </select>

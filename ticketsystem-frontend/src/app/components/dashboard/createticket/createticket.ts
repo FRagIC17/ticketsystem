@@ -15,18 +15,18 @@ import { forkJoin } from 'rxjs';
 })
 export class Createticket {
 
-    private http = inject(HttpClient);
+  private http = inject(HttpClient);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   public sharedVariables = inject(SharedVariables);
 
   title: string = '';
   description: string = '';
-  selectedPriority: string = '';
-  selectedCategory: string = '';
-  selectedStatus: string = '';
-  selectedUser: string = '';
-  selectedItSupporter: string = '';
+  selectedPriorityId: number | null = null;
+  selectedCategoryId: number | null = null;
+  selectedStatusId: number | null = null;
+  selectedUserId: number | null = null;
+  selectedItSupporterId: number | null = null;
 
   priorities = signal<any[]>([]);
   statuses = signal<any[]>([]);
@@ -41,31 +41,31 @@ export class Createticket {
     }
   }
 
-loadInitialData() {
-  this.isLoading = true;
+  loadInitialData() {
+    this.isLoading = true;
 
-  forkJoin({
-    statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
-    priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`),
-    categories: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/categories`),
-    users: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/users`),
-    itSupporters: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/it-supporters`)
-  }).subscribe({
-    next: ({ categories, statuses, priorities, users, itSupporters }) => {
-      this.statuses.set(statuses);
-      this.priorities.set(priorities);
-      this.categories.set(categories);
-      this.users.set(users);
-      this.itSupporters.set(itSupporters);
-      console.log('Data loaded successfully');
-      this.isLoading = false;
-    },
-    error: err => {
-      console.error(err);
-      this.isLoading = false;
-    }
-  });
-}
+    forkJoin({
+      statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
+      priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`),
+      categories: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/categories`),
+      users: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/users`),
+      itSupporters: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/it-supporters`)
+    }).subscribe({
+      next: ({ categories, statuses, priorities, users, itSupporters }) => {
+        this.statuses.set(statuses);
+        this.priorities.set(priorities);
+        this.categories.set(categories);
+        this.users.set(users);
+        this.itSupporters.set(itSupporters);
+        console.log('Data loaded successfully');
+        this.isLoading = false;
+      },
+      error: err => {
+        console.error(err);
+        this.isLoading = false;
+      }
+    });
+  }
 
   sortTicketsByStatus(status: string) {
     console.log(status);
@@ -83,13 +83,13 @@ loadInitialData() {
     console.log('Creating ticket with:', {
       title: this.title,
       description: this.description,
-      status: this.selectedStatus,
-      priority: this.selectedPriority,
-      category: this.selectedCategory,
-      createdBy: this.selectedUser,
-      assignedTo: this.selectedItSupporter
+      statusId: this.selectedStatusId,
+      priorityId: this.selectedPriorityId,
+      categoryId: this.selectedCategoryId,
+      createdByUserId: this.selectedUserId,
+      assignedToItSupporterId: this.selectedItSupporterId
     });
-    if(!this.title || !this.description || !this.selectedStatus || !this.selectedPriority || !this.selectedCategory || !this.selectedUser) {
+    if (!this.title || !this.description || !this.selectedStatusId || !this.selectedPriorityId || !this.selectedCategoryId || !this.selectedUserId || !this.selectedItSupporterId) {
       alert('Please fill in all fields before submitting the ticket.');
       return;
     }
@@ -97,11 +97,11 @@ loadInitialData() {
     const payload = {
       title: this.title,
       description: this.description,
-      status: this.selectedStatus,
-      priority: this.selectedPriority,
-      category: this.selectedCategory,
-      createdBy: this.selectedUser,
-      assignedTo: this.selectedItSupporter
+      statusId: this.selectedStatusId,
+      priorityId: this.selectedPriorityId,
+      categoryId: this.selectedCategoryId,
+      createdByUserId: this.selectedUserId,
+      assignedToItSupporterId: this.selectedItSupporterId
     };
 
     console.log('Payload to send:', payload);
