@@ -21,8 +21,8 @@ public class Ticket {
     @Column(name="status_id") public int statusId;
     @Column(name="priority_id") public int priorityId;
     @Column(name="category_id") public int categoryId;
-    @Column(name="created_at") public LocalDateTime createdAt;
-    @Column(name="updated_at") public LocalDateTime updatedAt;
+    @Column(name="created_at") public LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name="updated_at") public LocalDateTime updatedAt = LocalDateTime.now();
     @Column(name="closed_at") public LocalDateTime closedAt;
     @Column(name="deleted_at") public LocalDateTime deletedAt;
 }

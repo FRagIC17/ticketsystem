@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SharedVariables } from '../../SharedVariables/SharedVariables';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { get } from 'http';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,65 +17,46 @@ export class Dashboard {
   amountOfTickets: number = 0;
   selectedTicket: any = null;
 
-  tickets: any[] = [];
-  testTickets: any[] = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com', category: 'Support', title: 'Ticket 1', description: 'Description for Ticket 1', status: 'Closed', priority: 'High', createdAt: new Date() },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', category: 'Sales', title: 'Ticket 2', description: 'Description for Ticket 2', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
-    { id: 3, name: 'Bob Johnson', email: 'bob.johnson@example.com', category: 'Marketing', title: 'Ticket 3', description: 'Description for Ticket 3', status: 'Closed', priority: 'Low', createdAt: new Date() },
-    { id: 4, name: 'Alice Brown', email: 'alice.brown@example.com', category: 'IT', title: 'Ticket 4', description: 'Description for Ticket 4', status: 'Open', priority: 'High', createdAt: new Date() },
-    { id: 5, name: 'Charlie Wilson', email: 'charlie.wilson@example.com', category: 'HR', title: 'Ticket 5', description: 'Description for Ticket 5', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
-    { id: 7, name: 'Eve Green', email: 'eve.green@example.com', category: 'Finance', title: 'Ticket 7', description: 'Description for Ticket 7', status: 'Closed', priority: 'High', createdAt: new Date() },
-    { id: 8, name: 'Frank White', email: 'frank.white@example.com', category: 'IT', title: 'Ticket 8', description: 'Description for Ticket 8', status: 'In Progress', priority: 'Medium', createdAt: new Date() },
-    { id: 9, name: 'Grace Black', email: 'grace.black@example.com', category: 'Marketing', title: 'Ticket 9', description: 'Description for Ticket 9', status: 'Open', priority: 'Low', createdAt: new Date() },
-    { id: 10, name: 'Henry Grey', email: 'henry.grey@example.com', category: 'Sales', title: 'Ticket 10', description: 'Description for Ticket 10', status: 'Closed', priority: 'High', createdAt: new Date() },
-  ];
-  statuses: any[] = [];
-  priorities: any[] = [];
+  tickets = signal<any[]>([]);
+  statuses = signal<any[]>([]);
+  priorities = signal<any[]>([]);
 
   selectedStatus: string = '';
   selectedPriority: string = '';
 
-  loading = { statuses: true, priorities: true };
+  isLoading = true;
 
-  constructor(private http: HttpClient, private router: Router, private cdr: ChangeDetectorRef) { }
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
-    //this.loadTickets();
-
-    this.getPriorityAndStatusFromDatabase()
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadInitialData();
+    }
   }
 
-  getPriorityAndStatusFromDatabase() {
-    // Fetch Statuses
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`)
-      .subscribe({
-        next: (data) => {
-          this.statuses = data || [];
-          this.loading.statuses = false;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error loading statuses:', err);
-          this.loading.statuses = false;
-          this.cdr.detectChanges();
-        }
-      });
+loadInitialData() {
+  this.isLoading = true;
 
-    // Fetch Priorities
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`)
-      .subscribe({
-        next: (data) => {
-          this.priorities = data || [];
-          this.loading.priorities = false;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error loading priorities:', err);
-          this.loading.priorities = false;
-          this.cdr.detectChanges();
-        }
-      });
-  }
+  forkJoin({
+    tickets: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets`),
+    statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
+    priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`)
+  }).subscribe({
+    next: ({ tickets, statuses, priorities }) => {
+      this.tickets.set(tickets);
+      this.amountOfTickets = tickets.length;
+      this.statuses.set(statuses);
+      this.priorities.set(priorities);
+      this.isLoading = false;
+    },
+    error: err => {
+      console.error(err);
+      this.isLoading = false;
+    }
+  });
+}
 
   // Helper to safely get the value for [value] binding
   getValue(item: any): string {
@@ -91,21 +73,27 @@ export class Dashboard {
   }
 
   sortTicketsByStatus(status: any) {
-    console.log('Filtering by status:', status);
-    this.http.get(`${SharedVariables.baseUrl}/api/tickets?status=${this.getValue(status)}`)
+    this.http.get<any[]>(
+      `${SharedVariables.baseUrl}/api/tickets?status=${this.getValue(status)}`
+    ).subscribe({
+      next: data => {
+        this.tickets.set(data);
+        this.amountOfTickets = data.length;
+      },
+      error: err => console.error(err)
+    });
   }
 
   sortTicketsByPriority(priority: any) {
-    console.log('Filtering by priority:', priority);
-    this.http.get(`${SharedVariables.baseUrl}/api/tickets?priority=${this.getValue(priority)}`)
-  }
-
-  loadTickets() {
-    this.http.get(`${SharedVariables.baseUrl}/api/tickets`)
-      .subscribe((response: any) => {
-        this.tickets = response;
-        this.amountOfTickets = this.tickets.length;
-      });
+    this.http.get<any[]>(
+      `${SharedVariables.baseUrl}/api/tickets?priority=${this.getValue(priority)}`
+    ).subscribe({
+      next: data => {
+        this.tickets.set(data);
+        this.amountOfTickets = data.length;
+      },
+      error: err => console.error(err)
+    });
   }
 
   onTicketClick(ticket: any) {
@@ -114,65 +102,69 @@ export class Dashboard {
   }
 
   getStatusStyles(ticket: any) {
-    switch (ticket.status) {
+    switch ((ticket?.status || '').trim()) {
       case 'Open':
         return {
-          background: 'rgba(59,130,246,.14)',
-          border: '#3b82f6',
-          color: '#1e3a8a'
+          background: 'rgba(59, 130, 246, 0.12)',
+          border: '#2563eb',
         };
 
       case 'In Progress':
         return {
-          background: 'rgba(245,158,11,.14)',
-          border: '#f59e0b',
-          color: '#92400e'
+          background: 'rgba(245, 158, 11, 0.12)',
+          border: '#d97706',
+        };
+
+      case 'Resolved':
+        return {
+          background: 'rgba(16, 185, 129, 0.12)',
+          border: '#059669',
         };
 
       case 'Closed':
         return {
-          background: 'rgba(16,185,129,.14)',
-          border: '#10b981',
-          color: '#065f46'
+          background: 'rgba(239, 68, 68, 0.12)',
+          border: '#dc2626',
         };
 
       default:
         return {
-          background: '#f3f4f6',
+          background: 'rgba(156, 163, 175, 0.12)',
           border: '#9ca3af',
-          color: '#111827'
         };
     }
   }
 
   getPriorityStyles(ticket: any) {
-    switch (ticket.priority) {
+    switch ((ticket?.priority || '').trim()) {
+      case 'Critical':
+        return {
+          background: 'rgba(239, 68, 68, 0.12)',
+          border: '#dc2626',
+        };
+
       case 'High':
         return {
-          background: 'rgba(239,68,68,.14)',
-          border: '#ef4444',
-          color: '#991b1b'
+          background: 'rgba(249, 115, 22, 0.12)',
+          border: '#ea580c',
         };
 
       case 'Medium':
         return {
-          background: 'rgba(245,158,11,.14)',
-          border: '#f59e0b',
-          color: '#92400e'
+          background: 'rgba(234, 179, 8, 0.12)',
+          border: '#ca8a04',
         };
 
       case 'Low':
         return {
-          background: 'rgba(34,197,94,.14)',
-          border: '#22c55e',
-          color: '#166534'
+          background: 'rgba(34, 197, 94, 0.12)',
+          border: '#16a34a',
         };
 
       default:
         return {
-          background: '#f3f4f6',
+          background: 'rgba(156, 163, 175, 0.12)',
           border: '#9ca3af',
-          color: '#111827'
         };
     }
   }
