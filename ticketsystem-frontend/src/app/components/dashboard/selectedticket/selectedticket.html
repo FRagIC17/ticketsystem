@@ -1,10 +1,17 @@
 <section class="selected-ticket-page" *ngIf="ticket() as currentTicket; else noTicket">
-    <p class="mb-3"><a href="/">&larr; Go Back</a></p>
-    <h1 class="title is-3 selected-ticket-title">{{ currentTicket.title }}</h1>
+    <div class="is-flex is-justify-content-space-between mb-4">
+        <div>
+            <p class="mb-3"><a href="/">&larr; Go Back</a></p>
+            <h1 class="title is-3 selected-ticket-title">{{ currentTicket.title }}</h1>
+        </div>
+        <div>
+            <button class="button is-danger">Delete Ticket</button>
+        </div>
+    </div>
 
     <main class="selected-ticket-layout columns is-variable is-5 is-multiline">
         <div class="column is-8-desktop is-12-tablet">
-            <section class="form-box selected-ticket-main-card" [style.borderColor]="getPriorityStyles(currentTicket).border">
+            <section class="form-box selected-ticket-main-card">
                 <div class="ticket-meta-row">
                     <p class="has-text-weight-semibold">Category:</p>
                     <div>{{ currentTicket.category }}</div>
@@ -37,6 +44,31 @@
             <section class="form-box selected-ticket-aside">
                 <p><span class="has-text-weight-semibold">Created At:</span> {{ currentTicket.createdAt | date }}</p>
                 <p><span class="has-text-weight-semibold">Assigned To:</span> {{ currentTicket.assignedTo }}</p>
+            </section>
+        </aside>
+
+        <aside class="column is-8-desktop is-12-tablet">
+            <section class="form-box">
+                <h2 class="title is-4">Comments</h2>
+                <div class="selected-ticket-comment" *ngFor="let comment of currentTicket.comments">
+                    <p class="has-text-weight-semibold">{{ comment.commentBy }} <span class="is-italic is-size-7">({{
+                            comment.commentAt | date:'short' }})</span></p>
+                    <p>{{ comment.comment }}</p>
+                </div>
+                <div class="selected-ticket-add-comment">
+                    <label for="new-comment" class="title is-5 mb-2">Add Comment</label>
+                    <p>created By</p>
+                    <div class="select">
+                        <select [(ngModel)]="selectedUserId" name="createdBy">
+                            <option value="null">Select User</option>
+                            <option *ngFor="let user of users()" [value]="user.id">
+                                {{ user.firstName }} {{ user.lastName }}
+                            </option>
+                        </select>
+                    </div>
+                    <textarea id="new-comment" class="textarea mb-3" [(ngModel)]="newComment"></textarea>
+                    <button class="button" (click)="addComment()">Submit Comment</button>
+                </div>
             </section>
         </aside>
     </main>

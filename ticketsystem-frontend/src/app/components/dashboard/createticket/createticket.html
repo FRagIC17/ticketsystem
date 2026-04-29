@@ -12,7 +12,7 @@
             <p>created By</p>
             <div class="select">
                 <select [(ngModel)]="selectedUserId" name="createdBy">
-                    <option value="">Select User</option>
+                    <option value="null">Select User</option>
                     <option *ngFor="let user of users()" [value]="user.id">
                         {{ user.firstName }} {{ user.lastName }}
                     </option>
@@ -23,7 +23,7 @@
             <p>Category</p>
             <div class="select">
                 <select [(ngModel)]="selectedCategoryId" name="category">
-                    <option value="">Select Category</option>
+                    <option value="null">Select Category</option>
                     <option *ngFor="let category of categories()" [value]="category.id">
                         {{ category.name }}
                     </option>
@@ -34,7 +34,7 @@
             <p>Status</p>
             <div class="select">
                 <select [(ngModel)]="selectedStatusId" name="status">
-                    <option value="">Select Status</option>
+                    <option value="null">Select Status</option>
                     <option *ngFor="let status of statuses()" [value]="status.id">
                         {{ status.name }}
                     </option>
@@ -46,7 +46,7 @@
             <p>Priority</p>
             <div class="select">
                 <select [(ngModel)]="selectedPriorityId" name="priority">
-                    <option value="">Select Priority</option>
+                    <option value="null">Select Priority</option>
                     <option *ngFor="let priority of priorities()" [value]="priority.id">
                         {{ priority.name }}
                     </option>
@@ -57,7 +57,7 @@
             <p>Assigned To</p>
             <div class="select" *ngIf="!sharedVariables.isUserView">
                 <select [(ngModel)]="selectedItSupporterId" name="assignedTo">
-                    <option value="">Select Supporter</option>
+                    <option value="null">Select Supporter</option>
                     <option *ngFor="let itSupporter of itSupporters()" [value]="itSupporter.id">
                         {{ itSupporter.firstName }} {{ itSupporter.lastName }}
                     </option>
