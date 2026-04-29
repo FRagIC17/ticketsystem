@@ -1,28 +1,30 @@
-<main class="cell is-col-span-4 ticketboard-main" id="create-ticket">
-    <div class="content">
+<main class="ticketboard-main" id="create-ticket">
+    <div class="is-flex is-flex-direction-column is-justify-content-center">
         <h1 class="title is-3 pt-4">Create Ticket</h1>
-        <p><a href="/">&larr;</a> Go Back</p>
+        <p><a href="/">&larr; Go Back</a></p>
     </div>
-    <div class="form-box">
+    <div class="form-box" id="create-ticket-box">
         <p>Title</p>
-        <input type="text" placeholder="Title" class="input mb-3" id="create-ticket-title">
+        <input type="text" placeholder="Title" class="input mb-3" id="create-ticket-title" [(ngModel)]="title">
         <p>Description</p>
-        <textarea placeholder="Description" class="textarea mb-3" id="create-ticket-description"></textarea>
-        <p>Assigned To</p>
-        <div class="select">
-            <select [(ngModel)]="selectedUser" name="assignedTo">
-                <option value="">Select User</option>
-                <option>User 1</option>
-                <option>User 2</option>
-                <option>User 3</option>
-            </select>
-        </div>
+        <textarea placeholder="Description" class="textarea mb-3" id="create-ticket-description" [(ngModel)]="description"></textarea>
+        <aside>
+            <p>created By</p>
+            <div class="select">
+                <select [(ngModel)]="selectedUser" name="createdBy">
+                    <option value="">Select User</option>
+                    <option *ngFor="let user of users()" [value]="user.firstName + ' ' + user.lastName">
+                        {{ user.firstName }} {{ user.lastName }}
+                    </option>
+                </select>
+            </div>
+        </aside>
         <aside>
             <p>Category</p>
             <div class="select">
                 <select [(ngModel)]="selectedCategory" name="category">
                     <option value="">Select Category</option>
-                    <option *ngFor="let category of categories" [value]="category.name">
+                    <option *ngFor="let category of categories()" [value]="category.name">
                         {{ category.name }}
                     </option>
                 </select>
@@ -33,7 +35,7 @@
             <div class="select">
                 <select [(ngModel)]="selectedStatus" name="status">
                     <option value="">Select Status</option>
-                    <option *ngFor="let status of statuses" [value]="status.name">
+                    <option *ngFor="let status of statuses()" [value]="status.name">
                         {{ status.name }}
                     </option>
                 </select>
@@ -46,15 +48,27 @@
                 <select [(ngModel)]="selectedPriority" name="priority"
                     (Change)="sortTicketsByPriority(selectedPriority)">
                     <option value="">Select Priority</option>
-                    <option *ngFor="let priority of priorities" [value]="priority.name">
+                    <option *ngFor="let priority of priorities()" [value]="priority.name">
                         {{ priority.name }}
                     </option>
                 </select>
             </div>
         </aside>
+        <aside>
+            <p>Assigned To</p>
+            <div class="select" *ngIf="!sharedVariables.isUserView">
+                <select [(ngModel)]="selectedItSupporter" name="assignedTo">
+                    <option value="">Select Supporter</option>
+                    <option *ngFor="let itSupporter of itSupporters()" [value]="itSupporter.firstName + ' ' + itSupporter.lastName">
+                        {{ itSupporter.firstName }} {{ itSupporter.lastName }}
+                    </option>
+                </select>
+            </div>
+            <p *ngIf="sharedVariables.isUserView" [style.font-weight]="'bold'" [style.color]="'#f0f0f0'"> will be chosen later</p>
+        </aside>
         <br>
         <div>
-            <button class="button">Submit Ticket</button>
+            <button class="button mr-2" (click)="createTicket()">Submit Ticket</button>
             <button class="button" (click)="goBack()">Cancel</button>
         </div>
     </div>

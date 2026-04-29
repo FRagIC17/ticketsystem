@@ -3,12 +3,15 @@ package quarkus.philip.dk.RESTEndpoints;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Ticket;
+import quarkus.philip.dk.TicketView;
 
 @Path("/api/tickets")
 public class TicketEndpoint {
@@ -19,7 +22,7 @@ public class TicketEndpoint {
     @GET
     public Response getTickets() {
         try {
-            TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t", Ticket.class);
+            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv", TicketView.class);
             return Response.ok(query.getResultList()).build();
             
         } catch (Exception e) {
@@ -32,7 +35,7 @@ public class TicketEndpoint {
     @Path("/sorted-by-priority")
     public Response getTicketsByPriority(@QueryParam("priority") int priorityId) {
         try {
-            TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t WHERE t.priority_id = :priority_id", Ticket.class);
+            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv WHERE tv.priorityId = :priority_id", TicketView.class);
             query.setParameter("priority_id", priorityId);
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
@@ -45,7 +48,7 @@ public class TicketEndpoint {
     @Path("/sorted-by-status")
     public Response getTicketsByStatus(@QueryParam("status") int statusId) {
         try {
-            TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t WHERE t.status_id = :status_id", Ticket.class);
+            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv WHERE tv.statusId = :status_id", TicketView.class);
             query.setParameter("status_id", statusId);
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
@@ -58,7 +61,7 @@ public class TicketEndpoint {
     @Path("/ticket-by-id")
     public Response getTicketById(@QueryParam("id") int id) {
         try {
-            TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t WHERE t.id = :id", Ticket.class);
+            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv WHERE tv.id = :id", TicketView.class);
             query.setParameter("id", id);
             return Response.ok(query.getSingleResult()).build();
         } catch (Exception e) {
@@ -67,17 +70,18 @@ public class TicketEndpoint {
         }
     }
 
-    @PUT
+    @POST
+    @Transactional
     @Path("/create-ticket")
     public Response createTicket(Ticket ticket) {
+        System.out.println("Received ticket: " + ticket);
+
         try {
-            em.getTransaction().begin();
             em.persist(ticket);
-            em.getTransaction().commit();
             return Response.ok("Ticket created successfully").build();
         } catch (Exception e) {
             //catch if ticket creation fails, return string "Failed to create ticket"
-            return Response.ok("Failed to create ticket").build();
+            return Response.ok("Failed to create ticket" + e).build();
         }
     }
 }
