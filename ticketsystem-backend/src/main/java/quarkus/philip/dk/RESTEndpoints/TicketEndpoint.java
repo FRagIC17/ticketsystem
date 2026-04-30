@@ -1,18 +1,26 @@
 package quarkus.philip.dk.RESTEndpoints;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Ticket;
 import quarkus.philip.dk.TicketDTO;
 import quarkus.philip.dk.TicketView;
+import quarkus.philip.dk.UpdateTicketDTO;
 
 @Path("/api/tickets")
 public class TicketEndpoint {
@@ -33,32 +41,18 @@ public class TicketEndpoint {
     }
 
     @GET
-    @Path("/sorted-by-priority")
-    public Response getTicketsByPriority(@QueryParam("priority") int priorityId) {
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTicketsBySearchTerm(@QueryParam("search") String searchTerm) {
+        System.out.println("Received search term: " + searchTerm);
         try {
-            TypedQuery<TicketView> query = em
-                    .createQuery("SELECT tv FROM TicketView tv WHERE tv.priorityId = :priority_id", TicketView.class);
-            query.setParameter("priority_id", priorityId);
+            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv WHERE LOWER(tv.title) LIKE LOWER(:search_term)" +
+            "OR LOWER(tv.category) LIKE LOWER(:search_term)" +
+            "OR LOWER(tv.status) LIKE LOWER(:search_term)", TicketView.class);
+            query.setParameter("search_term", "%" + searchTerm + "%");
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
-            // catch if 1. no tickets are found or 2. if the priorityId is invalid, return
-            // string "No tickets with priority {priorityId} found"
-            return Response.ok("No tickets with priority " + priorityId + " found").build();
-        }
-    }
-
-    @GET
-    @Path("/sorted-by-status")
-    public Response getTicketsByStatus(@QueryParam("status") int statusId) {
-        try {
-            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv WHERE tv.statusId = :status_id",
-                    TicketView.class);
-            query.setParameter("status_id", statusId);
-            return Response.ok(query.getResultList()).build();
-        } catch (Exception e) {
-            // catch if 1. no tickets are found or 2. if the statusId is invalid, return
-            // string "No tickets with status {statusId} found"
-            return Response.ok("No tickets with status " + statusId + " found").build();
+            return Response.ok("No tickets found for search term: " + searchTerm).build();
         }
     }
 
@@ -73,6 +67,27 @@ public class TicketEndpoint {
         } catch (Exception e) {
             // catch if no ticket is found, return string "No ticket with id {id} found"
             return Response.ok("No ticket with id " + id + " found").build();
+        }
+    }
+
+    @DELETE
+    @Transactional
+    @Path("/delete-ticket")
+    public Response deleteTicket(@QueryParam("id") int id) {
+        try {
+            Query query = em.createQuery("DELETE FROM Ticket t WHERE t.id = :id");
+            query.setParameter("id", id);
+            int deletedRows = query.executeUpdate();
+            if (deletedRows == 0) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No ticket with id " + id + " found")
+                        .build();
+            }
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to delete ticket: " + e.getMessage())
+                    .build();
         }
     }
 
@@ -96,5 +111,55 @@ public class TicketEndpoint {
         em.persist(ticket);
 
         return Response.ok().build();
+    }
+
+    @PUT
+    @Transactional
+    @Path("/update-ticket-status")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateTicketStatus(UpdateTicketDTO dto) {
+        try {
+            Query query = em.createQuery("UPDATE Ticket t SET t.statusId = :status_id WHERE t.id = :id");
+            query.setParameter("id", dto.ticketId);
+            query.setParameter("status_id", dto.statusId);
+            int updatedRows = query.executeUpdate();
+
+            if (updatedRows == 0) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No ticket with id " + dto.ticketId + " found")
+                        .build();
+            }
+
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to update ticket status: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @PUT
+    @Transactional
+    @Path("/update-ticket-priority")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateTicketPriority(UpdateTicketDTO dto) {
+        try {
+            Query query = em.createQuery("UPDATE Ticket t SET t.priorityId = :priority_id WHERE t.id = :id");
+            query.setParameter("id", dto.ticketId);
+            query.setParameter("priority_id", dto.priorityId);
+            int updatedRows = query.executeUpdate();
+
+            if (updatedRows == 0) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No ticket with id " + dto.ticketId + " found")
+                        .build();
+            }
+
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to update ticket priority: " + e.getMessage())
+                    .build();
+        }
     }
 }

@@ -1,0 +1,7 @@
+package quarkus.philip.dk;
+
+public class UpdateTicketDTO {
+    public int ticketId;
+    public int statusId;
+    public int priorityId;
+}
