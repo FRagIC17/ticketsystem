@@ -80,15 +80,6 @@ export class Createticket {
   }
 
   createTicket() {
-    console.log('Creating ticket with:', {
-      title: this.title,
-      description: this.description,
-      statusId: this.selectedStatusId,
-      priorityId: this.selectedPriorityId,
-      categoryId: this.selectedCategoryId,
-      createdByUserId: this.selectedUserId,
-      assignedToItSupporterId: this.selectedItSupporterId
-    });
     if (!this.title || !this.description || !this.selectedStatusId || !this.selectedPriorityId || !this.selectedCategoryId || !this.selectedUserId || !this.selectedItSupporterId) {
       alert('Please fill in all fields before submitting the ticket.');
       return;

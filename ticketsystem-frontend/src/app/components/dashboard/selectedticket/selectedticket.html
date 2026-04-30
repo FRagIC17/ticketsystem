@@ -5,12 +5,13 @@
             <h1 class="title is-3 selected-ticket-title">{{ currentTicket.title }}</h1>
         </div>
         <div>
-            <button class="button is-danger">Delete Ticket</button>
+            <button class="button is-danger" (click)="deleteTicket()">Delete Ticket</button>
         </div>
     </div>
 
     <main class="selected-ticket-layout columns is-variable is-5 is-multiline">
-        <div class="column is-8-desktop is-12-tablet">
+        <!-- Left Column: Ticket Info + Comments -->
+        <div class="column is-7-desktop is-12-tablet">
             <section class="form-box selected-ticket-main-card">
                 <div class="ticket-meta-row">
                     <p class="has-text-weight-semibold">Category:</p>
@@ -38,16 +39,7 @@
                     <p id="ticket-description">{{ currentTicket.description }}</p>
                 </div>
             </section>
-        </div>
 
-        <aside class="column is-4-desktop is-12-tablet">
-            <section class="form-box selected-ticket-aside">
-                <p><span class="has-text-weight-semibold">Created At:</span> {{ currentTicket.createdAt | date }}</p>
-                <p><span class="has-text-weight-semibold">Assigned To:</span> {{ currentTicket.assignedTo }}</p>
-            </section>
-        </aside>
-
-        <aside class="column is-8-desktop is-12-tablet">
             <section class="form-box">
                 <h2 class="title is-4">Comments</h2>
                 <div class="selected-ticket-comment" *ngFor="let comment of currentTicket.comments">
@@ -69,6 +61,41 @@
                     <textarea id="new-comment" class="textarea mb-3" [(ngModel)]="newComment"></textarea>
                     <button class="button" (click)="addComment()">Submit Comment</button>
                 </div>
+            </section>
+        </div>
+        
+        <!-- Right Column: Metadata + Status Select -->
+        <aside class="column is-5-desktop is-12-tablet">
+            <section class="form-box selected-ticket-aside">
+                <p><span class="has-text-weight-semibold">Created At:</span> {{ currentTicket.createdAt | date }}</p>
+                <p><span class="has-text-weight-semibold">Updated At:</span> {{ currentTicket.updatedAt | date }}</p>
+                <p><span class="has-text-weight-semibold">Assigned To:</span> {{ currentTicket.assignedTo }}</p>
+            </section>
+
+            <section class="form-box">
+                <p class="has-text-weight-semibold">Update Status</p>
+                <div class="select mb-3">
+                    <select [(ngModel)]="selectedStatusId" name="status">
+                        <option *ngFor="let status of statuses()" [ngValue]="status.id">
+                            {{ status.name }}
+                        </option>
+                    </select>
+                </div>
+                <br>
+                <button class="button mb-3" (click)="updateTicketStatus()">Update Status</button>
+            </section>
+
+            <section class="form-box">
+                <p class="has-text-weight-semibold">Update Priority</p>
+                <div class="select mb-3">
+                    <select [(ngModel)]="selectedPriorityId" name="priority">
+                        <option *ngFor="let priority of priorities()" [ngValue]="priority.id">
+                            {{ priority.name }}
+                        </option>
+                    </select>
+                </div>
+                <br>
+                <button class="button mb-3" (click)="updateTicketPriority()">Update Priority</button>
             </section>
         </aside>
     </main>
