@@ -8,6 +8,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Category;
 import quarkus.philip.dk.ItSupporter;
+import quarkus.philip.dk.KnowledgeBase;
 import quarkus.philip.dk.Priority;
 import quarkus.philip.dk.Status;
 import quarkus.philip.dk.User;
@@ -75,6 +76,30 @@ public class SharedEndpoint {
         } catch (Exception e) {
             //catch if no IT supporters are found, return string "No IT supporters found"
             return Response.ok("No IT supporters found").build();
+        }
+    }
+
+    @GET
+    @Path("/articles-for-user")
+    public Response getArticlesForUser() {
+        try {
+            TypedQuery<KnowledgeBase> query = em.createQuery("SELECT kb FROM KnowledgeBase kb WHERE kb.isAdmin = false", KnowledgeBase.class);
+            return Response.ok(query.getResultList()).build();
+        } catch (Exception e) {
+            //catch if no articles are found, return string "No articles found"
+            return Response.ok("No articles found").build();
+        }
+    }
+
+    @GET
+    @Path("/articles-for-supporter")
+    public Response getArticlesForSupporter() {
+        try {
+            TypedQuery<KnowledgeBase> query = em.createQuery("SELECT kb FROM KnowledgeBase kb", KnowledgeBase.class);
+            return Response.ok(query.getResultList()).build();
+        } catch (Exception e) {
+            //catch if no articles are found, return string "No articles found"
+            return Response.ok("No articles found").build();
         }
     }
 }

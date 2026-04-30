@@ -1,43 +1,37 @@
-<main>
+<main class="knowledgebase" *ngIf="sharedVariables.isUserView">
     <h2 class="title is-3">Knowledge Base</h2>
     <p class="is-5">Here you can find helpful articles and guides to assist you with common issues and questions.</p>
     <div class="knowledgebase-articles">
-        <!-- <div class="form-box" *ngFor="let article of articles">
-            <h3 class="is-4">{{ article.title }}</h3>
-            <p>{{ article.summary }}</p>
-            <a [routerLink]="['/knowledgebase', article.id]" class="button is-primary">Read More</a>
-        </div> -->
         <article class="knowledgebase-article">
-            <div class="form-box m-4">
-                <h3 class="is-4">How to Reset Your Password</h3>
-                <p>If you've forgotten your password, you can easily reset it by following these steps...</p>
+            <div class="form-box m-4" *ngFor="let article of articlesForUser()">
+                <h3 class="is-4">{{ article.title }}</h3>
+                <p>{{ article.summary }}</p>
                 <a>Read More</a>
-            </div>
-            <div class="form-box">
-                <h3 class="is-4">Troubleshooting Login Issues</h3>
-                <p>If you're having trouble logging in, here are some common solutions to try...</p>
-                <a>Read More</a>
-            </div>
-            <div class="form-box m-4">
-                <h3 class="is-4">Contacting Support</h3>
-                <p>If you need further assistance, you can contact our support team for help...</p>
-                <a>Read More</a>
-            </div>
-            <div class="form-box m-4">
-                <h3 class="is-4">Using the Ticket System</h3>
-                <p>Learn how to submit and manage your support tickets effectively...</p>
-                <a>Read More</a>
-            </div>
-            <div class="form-box m-4">
-                <h3 class="is-4">Submitting a New Ticket</h3>
-                <p>Learn how to create and submit a new support ticket...</p>
-                <a>Read More</a>
-            </div>
-            <div class="form-box m-4">
-                <h3 class="is-4">Managing Your Tickets</h3>
-                <p>Learn how to view and manage your existing support tickets...</p>
-                <a>Read More</a>
+                <!--[routerLink]="['/knowledgebase', article.id]"-->
             </div>
         </article>
     </div>
+</main>
+<main class="knowledgebase" *ngIf="!sharedVariables.isUserView">
+    <aside class="menu is-flex is-justify-content-space-between">
+        <div>
+            <h2 class="title is-3">Knowledge Base</h2>
+            <p class="is-5">Here you can find helpful articles and guides to assist you with common issues and questions.</p>
+        </div>
+        <div>
+            <button class="button is-warning">Add Article</button>
+        </div>
+
+    </aside>
+    <div class="knowledgebase-articles">
+        <article class="knowledgebase-article">
+            <div class="form-box m-4" *ngFor="let article of articlesForSupporter()">
+                <h3 class="is-4">{{ article.title }}</h3>
+                <p>{{ article.summary }}</p>
+                <a>Read More</a>
+                <!--[routerLink]="['/knowledgebase', article.id]"-->
+            </div>
+        </article>
+    </div>
+
 </main>
