@@ -22,14 +22,16 @@ export class Dashboard {
   statuses = signal<any[]>([]);
   priorities = signal<any[]>([]);
 
-  selectedStatus: string = '';
-  selectedPriority: string = '';
+  //selectedStatus: string = '';
+  //selectedPriority: string = '';
+  searchTerm: string = '';
 
   isLoading = true;
 
   private http = inject(HttpClient);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  public sharedVariables = inject(SharedVariables);
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -59,6 +61,25 @@ export class Dashboard {
     });
   }
 
+  onSearchTermChange() {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.loadInitialData();
+      return;
+    }
+
+    console.log('Searching for:', term);
+
+    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets/search?search=${encodeURIComponent(term)}`)
+      .subscribe({
+        next: data => {
+          this.tickets.set(data);
+        },
+        error: err => console.error(err)
+      });
+    
+  }
+
   // Helper to safely get the value for [value] binding
   getValue(item: any): string {
     if (!item) return '';
@@ -84,7 +105,7 @@ export class Dashboard {
   closedTickets(): number {
     const all = this.tickets();
     if (!all || !Array.isArray(all)) return 0;
-    return all.filter(t => (t?.status || '').toString().trim().toLowerCase() === 'closed').length;
+    return all.filter(t => (t?.status || '').toString().trim().toLowerCase() === 'closed' || (t?.status || '').toString().trim().toLowerCase() === 'resolved').length;
   }
 
   // Compute average resolution time across tickets and return a short human string (e.g. "2d 3h 15m")

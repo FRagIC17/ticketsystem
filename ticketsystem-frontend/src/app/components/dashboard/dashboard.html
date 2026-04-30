@@ -5,7 +5,7 @@
 			<div class="content">
 				<h1 class="title is-3 pt-4">Dashboard</h1>
 				<p class="subtitle is-6">Select an action from the left navigation.</p>
-				<div class="dashboard-overview is-flex">
+				<div class="dashboard-overview is-flex" *ngIf="!sharedVariables.isUserView">
 					<aside class="ticket-sla form-box m-0">
 						<app-sla></app-sla>
 					</aside>
@@ -34,10 +34,10 @@
 		<br>
 		<div class="ticketboard-content">
 
-			<div class="ticket-navbar is-flex mb-4 is-justify-content-space-between">
+			<div class="ticket-navbar is-flex mb-4 is-justify-content-start">
 				<div class="is-flex">
 
-					<!-- Status Dropdown -->
+					<!-- Status Dropdown 
 					<aside class="mr-6 is-flex is-flex-direction-column">
 						<label class="mb-1" for="status-select">Status</label>
 						<div class="select">
@@ -51,7 +51,7 @@
 						</div>
 					</aside>
 
-					<!-- Priority Dropdown -->
+					 Priority Dropdown 
 					<aside class="is-flex is-flex-direction-column">
 						<label class="mb-1 " for="priority-select">Priority</label>
 						<div class="select">
@@ -63,13 +63,17 @@
 								</option>
 							</select>
 						</div>
+					</aside>-->
+
+					<aside>
+						<input type="text" placeholder="Search tickets..." class="input" [(ngModel)]="searchTerm" (input)="onSearchTermChange()">
 					</aside>
 
 				</div>
 			</div>
 
-			<div class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of tickets()"
-				(click)="onTicketClick(ticket)">
+			<div id="ticket-main" class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of tickets()"
+				(click)="onTicketClick(ticket)" style="cursor: pointer;">
 				<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
 
 				<div class="is-flex">
