@@ -108,7 +108,7 @@ CREATE TABLE ticket (
         FOREIGN KEY (status_id) REFERENCES ticket_status(id),
     
     CONSTRAINT fk_ticket_priority 
-        FOREIGN KEY (priority_id) REFERENCES ticket_priority(id),ticket_view,
+        FOREIGN KEY (priority_id) REFERENCES ticket_priority(id),
     
     CONSTRAINT fk_ticket_category 
         FOREIGN KEY (category_id) REFERENCES ticket_category(id),
@@ -136,11 +136,13 @@ CREATE TABLE knowledge_base (
     article_body TEXT NOT NULL,
     summary TEXT,
 
-    category VARCHAR(100),
+    category_id INT NOT NULL,
     tags VARCHAR(255),
 
     created_by BIGINT NOT NULL,
     updated_by BIGINT NULL,
+    
+    is_admin BOOLEAN DEFAULT FALSE,
 
     is_published BOOLEAN DEFAULT TRUE,
 
@@ -148,6 +150,10 @@ CREATE TABLE knowledge_base (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME NULL,
+    
+    CONSTRAINT fk_kb_category_id
+		FOREIGN KEY	(category_id)
+        REFERENCES ticket_category(id),
 
     CONSTRAINT fk_kb_created_by
         FOREIGN KEY (created_by)
@@ -157,7 +163,7 @@ CREATE TABLE knowledge_base (
         FOREIGN KEY (updated_by)
         REFERENCES it_supporter(id),
 
-    INDEX idx_kb_category (category),
+    INDEX idx_kb_category (category_id),
     INDEX idx_kb_slug (slug),
     INDEX idx_kb_created_at (created_at),
     INDEX idx_kb_created_by (created_by),

@@ -62,25 +62,25 @@ VALUES
 'My current monitor has dead pixels and is 5 years old. Requesting a replacement.', 1, 1, 4);
  
 INSERT INTO knowledge_base
-( title, slug, article_body, summary, category, tags, created_by, updated_by, is_published )
+( title, slug, article_body, summary, category_id, tags, created_by, updated_by, is_admin )
 VALUES
 (
 'How to Fix VPN Connection Error 809',
 'how-to-fix-vpn-error-809',
 'This article explains common causes and solutions for VPN error 809...',
 'Troubleshooting guide for VPN error 809',
-'Network',
+1,
 'vpn,network,remote-access',
 2,
 2,
-TRUE
+FALSE
 ),
 (
 'Reinstalling Microsoft Office 365',
 'reinstall-office-365',
 'Step-by-step instructions to completely uninstall and reinstall Office 365...',
 'Clean reinstall guide for Microsoft Office',
-'Software',
+2, 
 'office,365,installation',
 3,
 4,
@@ -91,18 +91,18 @@ TRUE
 'bsod-troubleshooting',
 'Common causes and diagnostic steps for Blue Screen errors...',
 'BSOD diagnosis and repair guide',
-'Hardware',
+3,
 'bsod,windows,crash',
 1,
 1,
-TRUE
+FALSE
 ),
 (
 'Setting up Network Printer in Windows 11',
 'setup-network-printer-windows11',
 'Guide to install and troubleshoot network printers on Windows 11...',
 'How to connect to network printers',
-'Hardware',
+3,
 'printer,network,windows11',
 5,
 6,
