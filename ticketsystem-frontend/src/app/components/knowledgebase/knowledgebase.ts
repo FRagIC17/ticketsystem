@@ -50,4 +50,14 @@ export class Knowledgebase {
       }
     });
   }
+
+  openArticle() {
+    // Implement the logic to open the article, e.g., navigate to an article detail page or open a modal
+    document.getElementById('delete-modal')?.classList.add('is-active');
+  }
+
+  addArticle() {
+    // Implement the logic to add a new article
+
+  }
 }

@@ -19,7 +19,7 @@
             <p class="is-5">Here you can find helpful articles and guides to assist you with common issues and questions.</p>
         </div>
         <div>
-            <button class="button is-warning">Add Article</button>
+            <button class="button is-warning" (click)="openArticle()">Add Article</button>
         </div>
 
     </aside>
@@ -33,5 +33,12 @@
             </div>
         </article>
     </div>
-
 </main>
+
+<div class="modal" id="article-modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <!-- Any other Bulma elements you want -->
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
