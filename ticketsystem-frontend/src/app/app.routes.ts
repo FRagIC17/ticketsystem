@@ -6,6 +6,7 @@ import { Knowledgebase } from './components/knowledgebase/knowledgebase';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { Selectedticket } from './components/dashboard/selectedticket/selectedticket';
 import { Contact } from './components/contact/contact';
+import { About } from './components/about/about';
 
 export const routes: Routes = [
     {path: '', component: MainLayout, children: [
@@ -13,7 +14,8 @@ export const routes: Routes = [
         {path: 'tickets/:id', component: Selectedticket},
         {path: 'knowledge-base', component: Knowledgebase},
         {path: 'create-ticket', component: Createticket},
-        {path: 'contact', component: Contact}
+        {path: 'contact', component: Contact},
+        {path: 'about', component: About}
     ]},
 ];
 
