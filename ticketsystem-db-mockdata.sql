@@ -1,30 +1,21 @@
 USE ticketsystem_db;
 
-INSERT INTO users (first_name, last_name, email) VALUES
-('Alice', 'Johnson', 'alice.johnson@company.com'),
-('Bob', 'Smith', 'bob.smith@company.com'),
-('Carol', 'Williams', 'carol.williams@company.com'),
-('David', 'Brown', 'david.brown@company.com'),
-('Emma', 'Davis', 'emma.davis@company.com'),
-('Frank', 'Miller', 'frank.miller@company.com'),
-('Grace', 'Wilson', 'grace.wilson@company.com'),
-('Henry', 'Moore', 'henry.moore@company.com');
+INSERT INTO users (first_name, last_name, email, role) VALUES
+('Alice', 'Johnson', 'alice.johnson@company.com', 'USER'),
+('Bob', 'Smith', 'bob.smith@company.com', 'USER'),
+('Carol', 'Williams', 'carol.williams@company.com', 'USER'),
+('David', 'Brown', 'david.brown@company.com', 'USER'),
+('Emma', 'Davis', 'emma.davis@company.com', 'USER'),
+('Frank', 'Miller', 'frank.miller@company.com', 'USER'),
+('Grace', 'Wilson', 'grace.wilson@company.com', 'USER'),
+('Henry', 'Moore', 'henry.moore@company.com', 'USER'),
+('Alex', 'Rivera', 'alex.rivera@itcorp.com', 'SUPPORT'),
+('Jordan', 'Kim', 'jordan.kim@itcorp.com', 'SUPPORT'),
+('Sam', 'Patel', 'sam.patel@itcorp.com', 'SUPPORT'),
+('Taylor', 'Morgan', 'taylor.morgan@itcorp.com', 'SUPPORT'),
+('Casey', 'Bennett', 'casey.bennett@itcorp.com', 'SUPPORT'),
+('Riley', 'Quinn', 'riley.quinn@itcorp.com', 'SUPPORT');
 
-INSERT INTO it_supporter (first_name, last_name, email) VALUES
-('Alex', 'Rivera', 'alex.rivera@itcorp.com'),
-('Jordan', 'Kim', 'jordan.kim@itcorp.com'),
-('Sam', 'Patel', 'sam.patel@itcorp.com'),
-('Taylor', 'Morgan', 'taylor.morgan@itcorp.com'),
-('Casey', 'Bennett', 'casey.bennett@itcorp.com'),
-('Riley', 'Quinn', 'riley.quinn@itcorp.com');
-
-INSERT INTO ticket_comments (comment_text, created_by) VALUES
-('I restarted the computer but the issue persists.', 'Alice Johnson'),
-('Can you send me a screenshot of the error?', 'Bob Smith'),
-('This seems to be a driver issue. Updating now.', 'Carol Williams'),
-('The network drops every 10-15 minutes.', 'David Brown'),
-('Issue resolved after reinstalling the software.', 'Emma Davis'),
-('Still waiting for the replacement hardware.', 'Frank Miller');
 
 INSERT INTO ticket
 (created_by, assigned_to, title, description, status_id, priority_id, category_id)

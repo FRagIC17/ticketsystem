@@ -7,17 +7,8 @@ CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE
-) ENGINE=InnoDB;
-
--- =========================================
--- IT SUPPORTER
--- =========================================
-CREATE TABLE it_supporter (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE
+    email VARCHAR(255) NOT NULL UNIQUE,
+    role ENUM('USER', 'SUPPORT') NOT NULL
 ) ENGINE=InnoDB;
 
 
@@ -50,30 +41,6 @@ CREATE TABLE ticket_category (
 
 
 -- =========================================
--- COMMENTS TABLE
--- =========================================
-CREATE TABLE ticket_comments (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    ticket_id BIGINT NOT NULL,
-    comment_text TEXT NOT NULL,
-    created_by BIGINT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP 
-        ON UPDATE CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_comment_ticket
-        FOREIGN KEY (ticket_id)
-        REFERENCES ticket(id),
-
-    CONSTRAINT fk_comment_user
-        FOREIGN KEY (created_by)
-        REFERENCES users(id)
-        ON DELETE CASCADE
-        
-) ENGINE=InnoDB;
-
-
--- =========================================
 -- TICKETS
 -- =========================================
 CREATE TABLE ticket (
@@ -102,7 +69,7 @@ CREATE TABLE ticket (
         FOREIGN KEY (created_by) REFERENCES users(id),
     
     CONSTRAINT fk_ticket_assigned_to 
-        FOREIGN KEY (assigned_to) REFERENCES it_supporter(id),
+        FOREIGN KEY (assigned_to) REFERENCES users(id),
     
     CONSTRAINT fk_ticket_status 
         FOREIGN KEY (status_id) REFERENCES ticket_status(id),
@@ -124,6 +91,29 @@ CREATE TABLE ticket (
     
 ) ENGINE=InnoDB;
 
+-- =========================================
+-- COMMENTS TABLE
+-- =========================================
+CREATE TABLE ticket_comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id BIGINT NOT NULL,
+    comment_text TEXT NOT NULL,
+    created_by BIGINT NOT NULL,
+    is_support_comment BOOLEAN,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP 
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_comment_ticket
+        FOREIGN KEY (ticket_id)
+        REFERENCES ticket(id),
+
+    CONSTRAINT fk_comment_user
+        FOREIGN KEY (created_by)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+        
+) ENGINE=InnoDB;
 
 -- =========================================
 -- KNOWLEDGE BASE
@@ -157,11 +147,11 @@ CREATE TABLE knowledge_base (
 
     CONSTRAINT fk_kb_created_by
         FOREIGN KEY (created_by)
-        REFERENCES it_supporter(id),
+        REFERENCES users(id),
 
     CONSTRAINT fk_kb_updated_by
         FOREIGN KEY (updated_by)
-        REFERENCES it_supporter(id),
+        REFERENCES users(id),
 
     INDEX idx_kb_category (category_id),
     INDEX idx_kb_slug (slug),
@@ -184,6 +174,9 @@ SELECT
 
     CONCAT(u.first_name,' ',u.last_name) AS created_by,
     CONCAT(s.first_name,' ',s.last_name) AS assigned_to,
+    
+    t.created_by AS created_by_id,
+    t.assigned_to AS assigned_to_id,
 
     ts.name AS status,
     tp.name AS priority,
@@ -201,7 +194,7 @@ SELECT
 
 FROM ticket t
 LEFT JOIN users u ON t.created_by = u.id
-LEFT JOIN it_supporter s ON t.assigned_to = s.id
+LEFT JOIN users s ON t.assigned_to = s.id
 LEFT JOIN ticket_status ts ON t.status_id = ts.id
 LEFT JOIN ticket_priority tp ON t.priority_id = tp.id
 LEFT JOIN ticket_category tc ON t.category_id = tc.id
@@ -210,6 +203,25 @@ LEFT JOIN ticket_comments c ON t.id = c.ticket_id
 WHERE t.deleted_at IS NULL
 GROUP BY t.id;
 
+-- =========================================
+-- COMMENT VIEW
+-- =========================================
+
+CREATE OR REPLACE VIEW comment_view AS
+SELECT 
+    c.id,
+    c.ticket_id,
+    c.comment_text,
+    c.created_by,
+    u.first_name,
+    u.last_name,
+    u.email,
+    u.role,
+    c.is_support_comment,
+    c.created_at,
+    c.updated_at
+FROM ticket_comments c
+JOIN users u ON c.created_by = u.id;
 
 -- =========================================
 -- SEED DATA

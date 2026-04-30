@@ -1,18 +1,12 @@
 package quarkus.philip.dk.RESTEndpoints;
 
-import java.time.LocalDateTime;
-
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Category;
-import quarkus.philip.dk.Comment;
-import quarkus.philip.dk.CommentDTO;
-import quarkus.philip.dk.ItSupporter;
 import quarkus.philip.dk.KnowledgeBase;
 import quarkus.philip.dk.Priority;
 import quarkus.philip.dk.Status;
@@ -52,7 +46,8 @@ public class SharedEndpoint {
     @Path("/users")
     public Response getUsers() {
         try {
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.role = :role", User.class);
+            query.setParameter("role", "USER");
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
             // catch if no users are found, return string "No users found"
@@ -76,7 +71,8 @@ public class SharedEndpoint {
     @Path("/it-supporters")
     public Response getITSupporters() {
         try {
-            TypedQuery<ItSupporter> query = em.createQuery("SELECT its FROM ItSupporter its", ItSupporter.class);
+            TypedQuery<User> query = em.createQuery("SELECT s FROM User s WHERE s.role = :role", User.class);
+            query.setParameter("role", "SUPPORT");
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
             // catch if no IT supporters are found, return string "No IT supporters found"
@@ -109,23 +105,5 @@ public class SharedEndpoint {
         }
     }
 
-    @POST
-    @Path("/add-comment")
-    public Response addComment(CommentDTO commentDTO) {
-        try {
-            
-            Comment comment = new Comment();
-            comment.ticketId = commentDTO.ticketId;
-            comment.commentText = commentDTO.commentText;
-            comment.createdBy = commentDTO.createdBy;
-            comment.createdAt = commentDTO.createdAt;
 
-            em.persist(comment);
-
-            return Response.ok("Comment added successfully").build();
-        } catch (Exception e) {
-            // catch if comment could not be added, return string "Failed to add comment"
-            return Response.ok("Failed to add comment").build();
-        }
-    }
 }

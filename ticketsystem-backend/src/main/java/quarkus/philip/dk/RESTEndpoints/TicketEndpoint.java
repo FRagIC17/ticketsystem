@@ -1,5 +1,7 @@
 package quarkus.philip.dk.RESTEndpoints;
 
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.inject.Inject;
@@ -17,6 +19,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import quarkus.philip.dk.Comment;
+import quarkus.philip.dk.CommentDTO;
+import quarkus.philip.dk.CommentView;
 import quarkus.philip.dk.Ticket;
 import quarkus.philip.dk.TicketDTO;
 import quarkus.philip.dk.TicketView;
@@ -46,9 +51,11 @@ public class TicketEndpoint {
     public Response getTicketsBySearchTerm(@QueryParam("search") String searchTerm) {
         System.out.println("Received search term: " + searchTerm);
         try {
-            TypedQuery<TicketView> query = em.createQuery("SELECT tv FROM TicketView tv WHERE LOWER(tv.title) LIKE LOWER(:search_term)" +
-            "OR LOWER(tv.category) LIKE LOWER(:search_term)" +
-            "OR LOWER(tv.status) LIKE LOWER(:search_term)", TicketView.class);
+            TypedQuery<TicketView> query = em
+                    .createQuery("SELECT tv FROM TicketView tv WHERE LOWER(tv.title) LIKE LOWER(:search_term)" +
+                            "OR LOWER(tv.category) LIKE LOWER(:search_term)" +
+                            "OR LOWER(tv.status) LIKE LOWER(:search_term)" +
+                            "OR LOWER(tv.priority) LIKE LOWER(:search_term)", TicketView.class);
             query.setParameter("search_term", "%" + searchTerm + "%");
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
@@ -159,6 +166,65 @@ public class TicketEndpoint {
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to update ticket priority: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @PUT
+    @Transactional
+    @Path("/reassign-ticket")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response reassignTicket(UpdateTicketDTO dto) {
+        try {
+            Query query = em.createQuery("UPDATE Ticket t SET t.assignedTo = :assigned_to WHERE t.id = :id");
+            query.setParameter("id", dto.ticketId);
+            query.setParameter("assigned_to", dto.assignedTo);
+            int updatedRows = query.executeUpdate();
+            if (updatedRows == 0) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No ticket with id " + dto.ticketId + " found")
+                        .build();
+            }
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to reassign ticket: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/comments-by-ticket-id")
+    public Response getCommentsByTicketId(@QueryParam("ticketId") Long ticketId) {
+        try {
+            TypedQuery<CommentView> query = em.createQuery("SELECT c FROM CommentView c WHERE c.ticketId = :ticket_id", CommentView.class);
+            query.setParameter("ticket_id", ticketId);
+            return Response.ok(query.getResultList()).build();
+        } catch (Exception e) {
+            return Response.ok("No comments found for ticket with id: " + ticketId).build();
+        }
+    }
+
+
+    @POST
+    @Transactional
+    @Path("/add-comment")
+    public Response addComment(CommentDTO dto) {
+
+        try {
+            Comment comment = new Comment();
+            comment.ticketId = dto.ticketId;
+            comment.commentText = dto.commentText;
+            comment.createdBy = dto.createdBy;
+            comment.isSupportComment = dto.isSupportComment;
+            comment.createdAt = LocalDateTime.now();
+
+            em.persist(comment);
+
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Failed to add comment: " + e.getMessage())
                     .build();
         }
     }
