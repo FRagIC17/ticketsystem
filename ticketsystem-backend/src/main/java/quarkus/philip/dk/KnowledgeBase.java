@@ -14,7 +14,7 @@ public class KnowledgeBase {
     @Column(name="slug") public String slug;
     @Column(name="article_body") public String articleBody;
     @Column(name="category_id") public int categoryId;
-    @Column(name="created_by") public String createdBy;
+    @Column(name="created_by") public Long createdBy;
     @Column(name="created_at") public LocalDateTime createdAt;
     @Column(name="updated_at") public LocalDateTime updatedAt;
     @Column(name="deleted_at") public LocalDateTime deletedAt;

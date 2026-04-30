@@ -13,7 +13,9 @@ public class TicketView {
     @Column(name="title") public String title;
     @Column(name="description") public String description;
     @Column(name="created_by") public String createdBy;
+    @Column(name="created_by_id") public Long createdById;
     @Column(name="assigned_to") public String assignedTo;
+    @Column(name="assigned_to_id") public Long assignedToId;
     @Column(name="category") public String category;
     @Column(name="status") public String status;
     @Column(name="priority") public String priority;
