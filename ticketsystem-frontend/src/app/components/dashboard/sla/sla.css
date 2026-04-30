@@ -1,0 +1,14 @@
+.sla-summary{margin-bottom:12px}
+.sla-circle-wrapper{position:relative;width:140px;height:140px;margin:0 auto 12px}
+.sla-circle-svg{width:100%;height:100%}
+.sla-circle-bg{fill:none;stroke:#16a34a;stroke-width:6}
+.sla-circle-progress{fill:none;stroke-width:6;stroke-dashoffset:0;transition:stroke-dasharray .35s ease,stroke .35s ease;transform:rotate(-90deg);transform-origin:60px 60px}
+.sla-circle-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.sla-circle-text .sla-percent{font-size:1.75rem;font-weight:700;margin:0;line-height:1;color:#16a34a}
+.sla-circle-text .sla-count{font-size:0.85rem;margin:4px 0 0;color:#6b7280}
+.sla-summary p.meta{margin:12px 0 0;font-size:0.9rem;color:#374151;text-align:center}
+
+.sla-summary.sla-breached .sla-circle-text .sla-percent,
+.sla-summary.sla-breached p.meta {
+	color: #dc2626;
+}

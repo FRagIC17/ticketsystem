@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { get } from 'http';
 import { forkJoin } from 'rxjs';
+import { Sla } from './sla/sla';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, Sla],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -36,27 +37,27 @@ export class Dashboard {
     }
   }
 
-loadInitialData() {
-  this.isLoading = true;
+  loadInitialData() {
+    this.isLoading = true;
 
-  forkJoin({
-    tickets: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets`),
-    statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
-    priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`)
-  }).subscribe({
-    next: ({ tickets, statuses, priorities }) => {
-      this.tickets.set(tickets);
-      this.amountOfTickets = tickets.length;
-      this.statuses.set(statuses);
-      this.priorities.set(priorities);
-      this.isLoading = false;
-    },
-    error: err => {
-      console.error(err);
-      this.isLoading = false;
-    }
-  });
-}
+    forkJoin({
+      tickets: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets`),
+      statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
+      priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`)
+    }).subscribe({
+      next: ({ tickets, statuses, priorities }) => {
+        this.tickets.set(tickets);
+        this.amountOfTickets = tickets.length;
+        this.statuses.set(statuses);
+        this.priorities.set(priorities);
+        this.isLoading = false;
+      },
+      error: err => {
+        console.error(err);
+        this.isLoading = false;
+      }
+    });
+  }
 
   // Helper to safely get the value for [value] binding
   getValue(item: any): string {
@@ -71,6 +72,57 @@ loadInitialData() {
     if (typeof item === 'string') return item;
     return item.name || item.status || item.priority || item.title || 'Unknown';
   }
+
+  // Return number of tickets with status 'Open'
+  openTickets(): number {
+    const all = this.tickets();
+    if (!all || !Array.isArray(all)) return 0;
+    return all.filter(t => (t?.status || '').toString().trim().toLowerCase() === 'open').length;
+  }
+
+  // Return number of tickets with status 'Closed'
+  closedTickets(): number {
+    const all = this.tickets();
+    if (!all || !Array.isArray(all)) return 0;
+    return all.filter(t => (t?.status || '').toString().trim().toLowerCase() === 'closed').length;
+  }
+
+  // Compute average resolution time across tickets and return a short human string (e.g. "2d 3h 15m")
+  averageResolutionTime(): string {
+    const all = this.tickets();
+    if (!all || !Array.isArray(all) || all.length === 0) return 'N/A';
+
+    let totalMs = 0;
+    let count = 0;
+
+    for (const t of all) {
+      const createdRaw = t?.createdAt;
+      const resolvedRaw = t?.resolvedAt ?? t?.closedAt ?? t?.resolvedOn ?? t?.closedOn ?? t?.updatedAt;
+      if (!createdRaw || !resolvedRaw) continue;
+      const created = new Date(createdRaw);
+      const resolved = new Date(resolvedRaw);
+      if (isNaN(created.getTime()) || isNaN(resolved.getTime())) continue;
+      const diff = resolved.getTime() - created.getTime();
+      if (diff >= 0) {
+        totalMs += diff;
+        count++;
+      }
+    }
+
+    if (count === 0) return 'N/A';
+
+    const avgMs = totalMs / count;
+    const days = Math.floor(avgMs / 86400000);
+    const hours = Math.floor((avgMs % 86400000) / 3600000);
+    const minutes = Math.round((avgMs % 3600000) / 60000);
+
+    const parts: string[] = [];
+    if (days) parts.push(`${days}d`);
+    if (hours) parts.push(`${hours}h`);
+    if (minutes) parts.push(`${minutes}m`);
+    return parts.length ? parts.join(' ') : '0m';
+  }
+
 
   sortTicketsByStatus(status: any) {
     this.http.get<any[]>(

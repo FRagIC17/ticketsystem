@@ -1,0 +1,21 @@
+<div class="sla-info is-flex">
+    <div class="sla-summary is-flex is-flex-direction-column" [class.sla-breached]="isSlaBreached()">
+        <p class="is-6">SLA Compliance</p>
+        <div class="sla-circle-wrapper">
+            <svg class="sla-circle-svg" viewBox="0 0 120 120" role="progressbar"
+                [attr.aria-valuenow]="slaCompliancePercent()" aria-valuemin="0" aria-valuemax="100">
+                <circle cx="60" cy="60" r="54" class="sla-circle-bg"></circle>
+                <circle cx="60" cy="60" r="54" class="sla-circle-progress"
+                    [attr.stroke-dasharray]="getCircleDasharray()" [style.stroke]="slaStrokeColor()"></circle>
+            </svg>
+            <div class="sla-circle-text">
+                <p class="sla-percent">{{ slaCirclePercent() }}%</p>
+                <p class="sla-count">
+                    {{ isSlaBreached() ? slaBreachedCount() : slaTotalCount() }}/{{ slaTotalCount() }}
+                </p>
+            </div>
+        </div>
+        <p class="meta">{{ slaBreachedCount() }} breached</p>
+    </div>
+
+</div>

@@ -1,72 +1,103 @@
 <main class="cell is-col-span-4 dashboard-main">
-	<div class="content">
-		<h1 class="title is-3 pt-4">Dashboard</h1>
-		<p class="subtitle is-6">Select an action from the left navigation.</p>
-	</div>
+	<div class="dashboard-wrapper">
 
-	<div class="ticketboard-content pr-6">
+		<div class="dashboard-content">
+			<div class="content">
+				<h1 class="title is-3 pt-4">Dashboard</h1>
+				<p class="subtitle is-6">Select an action from the left navigation.</p>
+				<div class="dashboard-overview is-flex">
+					<aside class="ticket-sla form-box m-0">
+						<app-sla></app-sla>
+					</aside>
 
-		<div class="ticket-navbar is-flex mb-4 is-justify-content-space-between">
-			<div class="is-flex">
-
-				<!-- Status Dropdown -->
-				<aside class="mr-6 is-flex is-flex-direction-column">
-					<label class="mb-1" for="status-select">Status</label>
-					<div class="select">
-						<select [(ngModel)]="selectedStatus" (change)="sortTicketsByStatus(selectedStatus)" id="status-select">
-							<option value="">Statuses</option>
-							<option *ngFor="let status of statuses()" [value]="getValue(status)">
-								{{ getDisplayName(status) }}
-							</option>
-						</select>
-					</div>
-				</aside>
-
-				<!-- Priority Dropdown -->
-				<aside class="is-flex is-flex-direction-column">
-					<label class="mb-1 " for="priority-select">Priority</label>
-					<div class="select">
-						<select [(ngModel)]="selectedPriority" (change)="sortTicketsByPriority(selectedPriority)" id="priority-select">
-							<option value="">Priorities</option>
-							<option *ngFor="let priority of priorities()" [value]="getValue(priority)">
-								{{ getDisplayName(priority) }}
-							</option>
-						</select>
-					</div>
-				</aside>
-
+					<article class="ticket-stats form-box">
+						<div class="is-flex is-justify-content-center is-align-items-center" [style.borderColor]="getStatusStyles({status: 'default'}).border">
+							<p class="is-6">Total Tickets</p>
+							<p class="is-4">{{ tickets().length }}</p>
+						</div>
+						<div class="is-flex is-justify-content-center is-align-items-center" [style.borderColor]="getStatusStyles({status: 'Open'}).border">
+							<p class="is-6">Open Tickets</p>
+							<p class="is-4">{{ openTickets() }}</p>
+						</div>
+						<div class="is-flex is-justify-content-center is-align-items-center" [style.borderColor]="getStatusStyles({status: 'Closed'}).border">
+							<p class="is-6">Closed Tickets</p>
+							<p class="is-4">{{ closedTickets() }}</p>
+						</div>
+						<div class="is-flex is-justify-content-center is-align-items-center" [style.borderColor]="getStatusStyles({status: 'In Progress'}).border">
+							<p class="is-6">Average Resolution Time</p>
+							<p class="is-4">{{ averageResolutionTime() }}</p>
+						</div>
+					</article>
+				</div>
 			</div>
 		</div>
+		<br>
+		<div class="ticketboard-content">
 
-		<div class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of tickets()"
-			(click)="onTicketClick(ticket)">
-			<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
+			<div class="ticket-navbar is-flex mb-4 is-justify-content-space-between">
+				<div class="is-flex">
 
-			<div class="is-flex">
-				<p>Category:</p>
-				<div class="ml-4">
-					{{ ticket.category }}
+					<!-- Status Dropdown -->
+					<aside class="mr-6 is-flex is-flex-direction-column">
+						<label class="mb-1" for="status-select">Status</label>
+						<div class="select">
+							<select [(ngModel)]="selectedStatus" (change)="sortTicketsByStatus(selectedStatus)"
+								id="status-select">
+								<option value="">Statuses</option>
+								<option *ngFor="let status of statuses()" [value]="getValue(status)">
+									{{ getDisplayName(status) }}
+								</option>
+							</select>
+						</div>
+					</aside>
+
+					<!-- Priority Dropdown -->
+					<aside class="is-flex is-flex-direction-column">
+						<label class="mb-1 " for="priority-select">Priority</label>
+						<div class="select">
+							<select [(ngModel)]="selectedPriority" (change)="sortTicketsByPriority(selectedPriority)"
+								id="priority-select">
+								<option value="">Priorities</option>
+								<option *ngFor="let priority of priorities()" [value]="getValue(priority)">
+									{{ getDisplayName(priority) }}
+								</option>
+							</select>
+						</div>
+					</aside>
+
 				</div>
 			</div>
 
-			<div class="is-flex">
-				<p>Status:</p>
-				<div class="tag ml-4" [style.backgroundColor]="getStatusStyles(ticket).background"
-					[style.borderColor]="getStatusStyles(ticket).border">
-					{{ ticket.status }}
+			<div class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of tickets()"
+				(click)="onTicketClick(ticket)">
+				<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
+
+				<div class="is-flex">
+					<p>Category:</p>
+					<div class="ml-4">
+						{{ ticket.category }}
+					</div>
 				</div>
+
+				<div class="is-flex">
+					<p>Status:</p>
+					<div class="tag ml-4" [style.backgroundColor]="getStatusStyles(ticket).background"
+						[style.borderColor]="getStatusStyles(ticket).border">
+						{{ ticket.status }}
+					</div>
+				</div>
+
+				<div class="is-flex">
+					<p>Priority:</p>
+					<div class="tag ml-4" [style.backgroundColor]="getPriorityStyles(ticket).background"
+						[style.borderColor]="getPriorityStyles(ticket).border">
+						{{ ticket.priority }}
+					</div>
+				</div>
+
+				<p>Created At: {{ ticket.createdAt | date }}</p>
 			</div>
 
-			<div class="is-flex">
-				<p>Priority:</p>
-				<div class="tag ml-4" [style.backgroundColor]="getPriorityStyles(ticket).background"
-					[style.borderColor]="getPriorityStyles(ticket).border">
-					{{ ticket.priority }}
-				</div>
-			</div>
-
-			<p>Created At: {{ ticket.createdAt | date }}</p>
 		</div>
-
 	</div>
 </main>

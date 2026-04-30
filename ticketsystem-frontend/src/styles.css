@@ -135,6 +135,13 @@ nav {
   align-items: center;
 }
 
+.ticket-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
 .knowledgebase-article {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
