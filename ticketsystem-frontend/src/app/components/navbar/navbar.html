@@ -1,8 +1,10 @@
 <nav class="navbar is-dark sidebar-navbar is-flex is-flex-direction-column" role="navigation">
-  <div class="navbar-brand">
+  <div class="navbar-brand is-flex is-flex-direction-column">
     <a class="navbar-item has-text-weight-bold is-size-4">
       Ticket System
     </a>
+    <p class="navbar-item" *ngIf="sharedVariables.isUserView">viewing as User</p>
+    <p class="navbar-item" *ngIf="!sharedVariables.isUserView">viewing as Supporter</p>
   </div>
 
   <div class="navbar-menu is-active is-flex is-flex-direction-column">

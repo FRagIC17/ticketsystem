@@ -49,15 +49,8 @@
                 </div>
                 <div class="selected-ticket-add-comment">
                     <label for="new-comment" class="title is-5 mb-2">Add Comment</label>
-                    <p>created By</p>
-                    <div class="select">
-                        <select [(ngModel)]="selectedUserId" name="createdBy">
-                            <option value="null">Select User</option>
-                            <option *ngFor="let user of users()" [value]="user.id">
-                                {{ user.firstName }} {{ user.lastName }}
-                            </option>
-                        </select>
-                    </div>
+                    <p class="mt-4" *ngIf="sharedVariables.isUserView">Typing comment as: {{ currentTicket.createdBy }} (user)</p>
+                    <p class="mt-4" *ngIf="!sharedVariables.isUserView">Typing comment as: {{ currentTicket.assignedTo }} (supporter)</p>
                     <textarea id="new-comment" class="textarea mb-3" [(ngModel)]="newComment"></textarea>
                     <button class="button" (click)="addComment()">Submit Comment</button>
                 </div>
@@ -70,6 +63,7 @@
                 <p><span class="has-text-weight-semibold">Created At:</span> {{ currentTicket.createdAt | date }}</p>
                 <p><span class="has-text-weight-semibold">Updated At:</span> {{ currentTicket.updatedAt | date }}</p>
                 <p><span class="has-text-weight-semibold">Assigned To:</span> {{ currentTicket.assignedTo }}</p>
+                <p><span class="has-text-weight-semibold">Created By:</span> {{ currentTicket.createdBy }}</p>
             </section>
 
             <section class="form-box">
