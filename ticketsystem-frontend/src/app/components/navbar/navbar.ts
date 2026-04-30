@@ -35,4 +35,8 @@ export class Navbar {
   Contact() {
     this.router.navigate(['/contact']);
   }
+
+  about() {
+    this.router.navigate(['/about']);
+  }
 }
