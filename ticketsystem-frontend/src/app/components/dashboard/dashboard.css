@@ -7,6 +7,9 @@
 #ticket-main:hover {
     background-color: rgba(37, 99, 235, 0.05);
     border-radius: 8px;
+    position: translateY(-1px);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border: 1px solid rgba(37, 99, 235, 0.15);
 }
 
 .ticket-stats {

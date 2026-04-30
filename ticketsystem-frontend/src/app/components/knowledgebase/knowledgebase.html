@@ -6,7 +6,7 @@
             <div class="form-box m-4" *ngFor="let article of articlesForUser()">
                 <h3 class="is-4">{{ article.title }}</h3>
                 <p>{{ article.summary }}</p>
-                <a>Read More</a>
+                <a class="read-more">Read More</a>
                 <!--[routerLink]="['/knowledgebase', article.id]"-->
             </div>
         </article>
@@ -28,7 +28,8 @@
             <div class="form-box m-4" *ngFor="let article of articlesForSupporter()">
                 <h3 class="is-4">{{ article.title }}</h3>
                 <p>{{ article.summary }}</p>
-                <a>Read More</a>
+                <br>
+                <button class="read-more button" style="border-radius: 20px; background-color: blue;">Read More</button>
                 <!--[routerLink]="['/knowledgebase', article.id]"-->
             </div>
         </article>

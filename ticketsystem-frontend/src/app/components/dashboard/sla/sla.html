@@ -15,7 +15,9 @@
                 </p>
             </div>
         </div>
-        <p class="meta">{{ slaBreachedCount() }} breached</p>
+        <p class="meta" [style.color]="slaBreachedCount() > 0 ? 'red' : 'green'">
+            {{ slaBreachedCount() }} breached
+        </p>
     </div>
 
 </div>
