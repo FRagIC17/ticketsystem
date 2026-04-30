@@ -19,6 +19,7 @@ export class Selectedticket {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
+  public sharedVariables = inject(SharedVariables);
 
   ticket = signal<any>(null);
   newComment: string = '';
@@ -308,7 +309,7 @@ export class Selectedticket {
       commentBy: 'Current User' // Replace with actual user info in a real app
     };
 
-    this.http.post(`${SharedVariables.baseUrl}/api/comments`, payload)
+    this.http.post(`${SharedVariables.baseUrl}/api/add-comment`, payload)
       .subscribe({
         next: (response) => {
           console.log('Comment added successfully:');
