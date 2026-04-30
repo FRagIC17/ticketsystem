@@ -1,1 +1,17 @@
-<p>contact works!</p>
+<main>
+    <div class="content">
+        <h1 class="title is-3 pt-4">Contact Support</h1>
+        <p class="subtitle is-6">If you have any questions or need assistance, please don't hesitate to contact our support team. You can reach us through the following channels:</p>
+        <div class="columns is-multiline is-variable is-4">
+            <div class="column is-one-fifth-desktop is-half-tablet is-full-mobile" *ngFor="let itSupport of itSupporters()">
+                <article class="is-flex is-flex-direction-column is-align-items-center mb-5">
+                    <div class="form-box has-text-centered">
+                        <img src="5100711-200.ico" alt="user image">
+                        <p class="is-5 has-text-weight-semibold">{{ itSupport.firstName }} {{ itSupport.lastName }}</p>
+                        <p>Email: {{ itSupport.email }}</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</main>
