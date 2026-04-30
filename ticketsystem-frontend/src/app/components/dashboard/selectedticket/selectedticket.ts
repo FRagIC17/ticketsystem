@@ -25,24 +25,31 @@ export class Selectedticket {
   newComment: string = '';
   comments = signal<any[]>([]);
   users = signal<any[]>([]);
+  supporters = signal<any[]>([]);
   statuses = signal<any[]>([]);
+  priorities = signal<any[]>([]);
   selectedUserId: number | null = null;
+  selectedItSupporterId: number | null = null;
   selectedStatusId: number | null = null;
   selectedPriorityId: number | null = null;
-  priorities = signal<any[]>([]);
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.loadSelectedTicket();
       forkJoin({
         users: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/users`),
+        supporters: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/it-supporters`),
         statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
-        priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`)
+        priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`),
+        comments: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets/comments-by-ticket-id?ticketId=${this.route.snapshot.paramMap.get('id')}`)
       }).subscribe({
-        next: ({ users, statuses, priorities }) => {
+        next: ({ users, supporters, statuses, priorities, comments }) => {
           this.users.set(users);
+          this.supporters.set(supporters);
           this.statuses.set(statuses);
           this.priorities.set(priorities);
+          this.comments.set(comments);
+
           this.syncSelectedStatus();
           this.syncSelectedPriority();
           console.log('Users, statuses, and priorities loaded successfully');
@@ -50,83 +57,42 @@ export class Selectedticket {
         error: err => {
           console.error('Failed to load users, statuses, or priorities:', err);
           this.users.set([]);
+          this.supporters.set([]);
           this.statuses.set([]);
           this.priorities.set([]);
         }
       });
     }
-
+    this.loadComments();
   }
 
-  loadUsers() {
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/users`)
-      .subscribe({
-        next: (response) => {
-          this.users.set(response);
-        },
-        error: (err) => {
-          console.error('Failed to load users:', err);
-          this.users.set([]);
-        }
-      });
-  }
 
-  loadStatuses() {
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`)
-      .subscribe({
-        next: (response) => {
-          this.statuses.set(response);
-          this.syncSelectedStatus();
-        },
-        error: (err) => {
-          console.error('Failed to load statuses:', err);
-          this.statuses.set([]);
-        }
-      });
-  }
-
-  
   updateTicketStatus() {
     const currentTicket = this.ticket();
     if (!currentTicket) {
       console.error('No ticket loaded to update status for');
       return;
     }
-    
+
     if (!this.selectedStatusId) {
       console.error('No status selected for update');
       return;
     }
-    
+
     const payload = {
       ticketId: currentTicket.id,
       statusId: this.selectedStatusId
     };
-    
+
     console.log('Updating ticket status with payload:', payload);
-    
+
     this.http.put(`${SharedVariables.baseUrl}/api/tickets/update-ticket-status`, payload)
-    .subscribe({
-      next: (response) => {
-        console.log('Ticket status updated successfully:', response);
-        this.loadSelectedTicket(); // Refresh ticket to show updated status
-      },
-      error: (err) => {
-        console.error('Failed to update ticket status:', err);
-      }
-    });
-  }
-  
-  loadPriorities() {
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`)
       .subscribe({
         next: (response) => {
-          this.priorities.set(response);
-          this.syncSelectedPriority();
+          this.loadSelectedTicket(); // Refresh ticket to show updated status
         },
         error: (err) => {
-          console.error('Failed to load priorities:', err);
-          this.priorities.set([]);
+          console.error('Failed to update ticket status:', err);
         }
       });
   }
@@ -137,29 +103,28 @@ export class Selectedticket {
       console.error('No ticket loaded to update priority for');
       return;
     }
-    
+
     if (!this.selectedPriorityId) {
       console.error('No priority selected for update');
       return;
     }
-    
+
     const payload = {
       ticketId: currentTicket.id,
       priorityId: this.selectedPriorityId
     };
-    
+
     console.log('Updating ticket priority with payload:', payload);
-    
+
     this.http.put(`${SharedVariables.baseUrl}/api/tickets/update-ticket-priority`, payload)
-    .subscribe({
-      next: (response) => {
-        console.log('Ticket priority updated successfully:', response);
-        this.loadSelectedTicket(); // Refresh ticket to show updated priority
-      },
-      error: (err) => {
-        console.error('Failed to update ticket priority:', err);
-      }
-    });
+      .subscribe({
+        next: (response) => {
+          this.loadSelectedTicket(); // Refresh ticket to show updated priority
+        },
+        error: (err) => {
+          console.error('Failed to update ticket priority:', err);
+        }
+      });
   }
 
   loadComments() {
@@ -170,10 +135,11 @@ export class Selectedticket {
       return;
     }
 
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/comments?ticketId=${currentTicket.id}`)
+    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets/comments-by-ticket-id?ticketId=${currentTicket.id}`)
       .subscribe({
         next: (response) => {
           this.comments.set(response);
+          this.loadSelectedTicket(); // Refresh ticket to ensure comments are up to date
         },
         error: (err) => {
           console.error('Failed to load comments:', err);
@@ -181,6 +147,35 @@ export class Selectedticket {
         }
       });
 
+  }
+
+  addComment(userId: number, isSupportComment: boolean) {
+    const currentTicket = this.ticket();
+    if (!currentTicket) {
+      console.error('No ticket loaded to add comment to');
+      return;
+    }
+
+    console.log('Adding comment with text:', this.newComment, 'by user ID:', userId);
+
+    const payload = {
+      ticketId: currentTicket.id,
+      commentText: this.newComment,
+      createdBy: userId,
+      isSupportComment: isSupportComment
+    };
+
+    this.http.post(`${SharedVariables.baseUrl}/api/tickets/add-comment`, payload)
+      .subscribe({
+        next: (response) => {
+          console.log('Comment added successfully:');
+          this.newComment = '';
+          this.loadSelectedTicket(); // Refresh ticket to show new comment
+        },
+        error: (err) => {
+          console.error('Failed to add comment:', err);
+        }
+      });
   }
 
 
@@ -232,6 +227,37 @@ export class Selectedticket {
         },
         error: (err) => {
           console.error('Failed to delete ticket:', err);
+        }
+      });
+  }
+
+  reassignTicket() {
+    const currentTicket = this.ticket();
+    if (!currentTicket) {
+      console.error('No ticket loaded to reassign');
+      return;
+    }
+
+    if (!this.selectedItSupporterId) {
+      console.error('No supporter selected for reassignment');
+      return;
+    }
+
+    const payload = {
+      ticketId: currentTicket.id,
+      assignedTo: this.selectedItSupporterId
+    };
+
+    console.log('Reassigning ticket with payload:', payload);
+
+    this.http.put(`${SharedVariables.baseUrl}/api/tickets/reassign-ticket`, payload)
+      .subscribe({
+        next: (response) => {
+          console.log('Ticket reassigned successfully:', response);
+          this.loadSelectedTicket(); // Refresh ticket to show new assignment
+        },
+        error: (err) => {
+          console.error('Failed to reassign ticket:', err);
         }
       });
   }
@@ -296,33 +322,6 @@ export class Selectedticket {
     }
   }
 
-  addComment() {
-    const currentTicket = this.ticket();
-    if (!currentTicket) {
-      console.error('No ticket loaded to add comment to');
-      return;
-    }
-
-    const payload = {
-      ticketId: currentTicket.id,
-      comment: this.newComment,
-      commentBy: 'Current User' // Replace with actual user info in a real app
-    };
-
-    this.http.post(`${SharedVariables.baseUrl}/api/add-comment`, payload)
-      .subscribe({
-        next: (response) => {
-          console.log('Comment added successfully:');
-          this.newComment = '';
-          this.loadSelectedTicket(); // Refresh ticket to show new comment
-        },
-        error: (err) => {
-          console.error('Failed to add comment:', err);
-        }
-      });
-  }
-
-  
 
   // Your style methods remain the same
   getStatusStyles(ticket: any) {

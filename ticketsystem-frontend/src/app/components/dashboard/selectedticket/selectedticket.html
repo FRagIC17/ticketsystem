@@ -42,21 +42,32 @@
 
             <section class="form-box">
                 <h2 class="title is-4">Comments</h2>
-                <div class="selected-ticket-comment" *ngFor="let comment of currentTicket.comments">
-                    <p class="has-text-weight-semibold">{{ comment.commentBy }} <span class="is-italic is-size-7">({{
-                            comment.commentAt | date:'short' }})</span></p>
-                    <p>{{ comment.comment }}</p>
+                <div class="ticket-comments-list">
+                    <article class="ticket-comments" *ngFor="let comment of comments()" [class.ticket-comments--support]="comment.isSupportComment" [class.ticket-comments--user]="!comment.isSupportComment">
+                        <div class="ticket-comments__header">
+                            <div>
+                                <p class="has-text-weight-semibold mb-1">{{ comment.firstName }} {{ comment.lastName }}</p>
+                                <p class="ticket-comments__meta">{{ comment.email }} <span>({{ comment.role.toLowerCase() }})</span></p>
+                            </div>
+                            <div class="ticket-comments__badge" [class.ticket-comments__badge--support]="comment.isSupportComment">
+                                {{ comment.isSupportComment ? 'Support' : 'User' }}
+                            </div>
+                        </div>
+                        <p class="ticket-comments__time is-italic is-size-7">{{ comment.createdAt | date:'short' }}</p>
+                        <p class="ticket-comments__body">{{ comment.commentText }}</p>
+                    </article>
                 </div>
                 <div class="selected-ticket-add-comment">
                     <label for="new-comment" class="title is-5 mb-2">Add Comment</label>
                     <p class="mt-4" *ngIf="sharedVariables.isUserView">Typing comment as: {{ currentTicket.createdBy }} (user)</p>
                     <p class="mt-4" *ngIf="!sharedVariables.isUserView">Typing comment as: {{ currentTicket.assignedTo }} (supporter)</p>
                     <textarea id="new-comment" class="textarea mb-3" [(ngModel)]="newComment"></textarea>
-                    <button class="button" (click)="addComment()">Submit Comment</button>
+                    <button class="button" (click)="addComment(currentTicket.createdById, false)" *ngIf="sharedVariables.isUserView">Submit Comment</button>
+                    <button class="button" (click)="addComment(currentTicket.assignedToId, true)" *ngIf="!sharedVariables.isUserView">Submit Comment</button>
                 </div>
             </section>
         </div>
-        
+
         <!-- Right Column: Metadata + Status Select -->
         <aside class="column is-5-desktop is-12-tablet">
             <section class="form-box selected-ticket-aside">
@@ -64,10 +75,21 @@
                 <p><span class="has-text-weight-semibold">Updated At:</span> {{ currentTicket.updatedAt | date }}</p>
                 <p><span class="has-text-weight-semibold">Assigned To:</span> {{ currentTicket.assignedTo }}</p>
                 <p><span class="has-text-weight-semibold">Created By:</span> {{ currentTicket.createdBy }}</p>
+                <section *ngIf="!sharedVariables.isUserView">
+                    <div class="select">
+                        <select [(ngModel)]="selectedItSupporterId" name="assignedTo">
+                            <option value="null">Reassign To...</option>
+                            <option *ngFor="let supporter of supporters()" [ngValue]="supporter.id">
+                                {{ supporter.firstName }} {{ supporter.lastName }}
+                            </option>
+                        </select>
+                    </div>
+                    <button class="button ml-2" (click)="reassignTicket()">Reassign</button>
+                </section>
             </section>
 
             <section class="form-box">
-                <p class="has-text-weight-semibold">Update Status</p>
+                <p class="has-text-weight-semibold" for="status">Update Status</p>
                 <div class="select mb-3">
                     <select [(ngModel)]="selectedStatusId" name="status">
                         <option *ngFor="let status of statuses()" [ngValue]="status.id">
@@ -80,7 +102,7 @@
             </section>
 
             <section class="form-box">
-                <p class="has-text-weight-semibold">Update Priority</p>
+                <p class="has-text-weight-semibold" for="priority">Update Priority</p>
                 <div class="select mb-3">
                     <select [(ngModel)]="selectedPriorityId" name="priority">
                         <option *ngFor="let priority of priorities()" [ngValue]="priority.id">

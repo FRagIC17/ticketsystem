@@ -36,6 +36,117 @@
 	line-height: 1.45;
 }
 
+.ticket-comments-list {
+	display: grid;
+	gap: 0.9rem;
+	margin: 1rem 0 1.25rem;
+}
+
+.ticket-comments {
+	padding: 1rem 1.1rem;
+	border-radius: 14px;
+	border: 1px solid rgba(15, 23, 42, 0.08);
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 249, 252, 0.96));
+	box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+	transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.ticket-comments:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.ticket-comments--support {
+	border-left: 4px solid #2563eb;
+	background: linear-gradient(180deg, rgba(239, 246, 255, 0.98), rgba(219, 234, 254, 0.92));
+}
+
+.ticket-comments--user {
+	border-left: 4px solid rgba(15, 23, 42, 0.18);
+}
+
+.ticket-comments__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 1rem;
+	margin-bottom: 0.4rem;
+}
+
+.ticket-comments__meta {
+	margin: 0;
+	font-size: 0.9rem;
+	color: rgba(15, 23, 42, 0.72);
+}
+
+.ticket-comments__meta span,
+.ticket-comments__time {
+	color: rgba(15, 23, 42, 0.58);
+}
+
+.ticket-comments__time {
+	margin-bottom: 0.55rem;
+}
+
+.ticket-comments__body {
+	margin: 0;
+	line-height: 1.6;
+	white-space: pre-wrap;
+}
+
+.ticket-comments__badge {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.3rem 0.7rem;
+	border-radius: 999px;
+	background: rgba(15, 23, 42, 0.08);
+	color: rgba(15, 23, 42, 0.8);
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.ticket-comments__badge--support {
+	background: rgba(37, 99, 235, 0.12);
+	color: #1d4ed8;
+}
+
+@media (prefers-color-scheme: dark) {
+	.ticket-comments {
+		border-color: rgba(255, 255, 255, 0.08);
+		background: linear-gradient(180deg, rgba(36, 41, 58, 0.98), rgba(29, 34, 48, 0.98));
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+	}
+
+	.ticket-comments--support {
+		border-left-color: #60a5fa;
+		background: linear-gradient(180deg, rgba(30, 41, 59, 0.98), rgba(23, 37, 84, 0.9));
+	}
+
+	.ticket-comments--user {
+		border-left-color: rgba(255, 255, 255, 0.18);
+	}
+
+	.ticket-comments__meta,
+	.ticket-comments__meta span,
+	.ticket-comments__time {
+		color: rgba(226, 232, 240, 0.68);
+	}
+
+	.ticket-comments__badge {
+		background: rgba(255, 255, 255, 0.08);
+		color: rgba(226, 232, 240, 0.88);
+	}
+
+	.ticket-comments__badge--support {
+		background: rgba(96, 165, 250, 0.16);
+		color: #bfdbfe;
+	}
+}
+
 .selected-ticket-aside p {
 	margin-bottom: 0.75rem;
 }
