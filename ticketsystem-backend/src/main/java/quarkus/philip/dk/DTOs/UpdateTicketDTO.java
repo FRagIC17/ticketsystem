@@ -1,4 +1,4 @@
-package quarkus.philip.dk;
+package quarkus.philip.dk.DTOs;
 
 public class UpdateTicketDTO {
     public int ticketId;
