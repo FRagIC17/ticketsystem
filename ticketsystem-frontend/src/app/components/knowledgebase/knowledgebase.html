@@ -6,7 +6,8 @@
             <div class="form-box m-4" *ngFor="let article of articlesForUser()">
                 <h3 class="is-4">{{ article.title }}</h3>
                 <p>{{ article.summary }}</p>
-                <a class="read-more">Read More</a>
+                <button class="read-more button" style="border-radius: 20px; background-color: blue;"
+                    (click)="openArticle(article)">Read More</button>
                 <!--[routerLink]="['/knowledgebase', article.id]"-->
             </div>
         </article>
@@ -16,10 +17,11 @@
     <aside class="menu is-flex is-justify-content-space-between">
         <div>
             <h2 class="title is-3">Knowledge Base</h2>
-            <p class="is-5">Here you can find helpful articles and guides to assist you with common issues and questions.</p>
+            <p class="is-5">Here you can find helpful articles and guides to assist you with common issues and
+                questions.</p>
         </div>
         <div>
-            <button class="button is-warning" (click)="openArticle()">Add Article</button>
+            <button class="button is-primary" (click)="opencreateArticle()">Add Article</button>
         </div>
 
     </aside>
@@ -27,19 +29,71 @@
         <article class="knowledgebase-article">
             <div class="form-box m-4" *ngFor="let article of articlesForSupporter()">
                 <h3 class="is-4">{{ article.title }}</h3>
-                <p>{{ article.summary }}</p>
                 <br>
-                <button class="read-more button" style="border-radius: 20px; background-color: blue;">Read More</button>
+                <button class="read-more button" style="border-radius: 20px; background-color: blue;"
+                    (click)="openArticle(article)">Read More</button>
                 <!--[routerLink]="['/knowledgebase', article.id]"-->
             </div>
         </article>
     </div>
 </main>
 
+<div class="modal" id="create-article-modal">
+    <div class="modal-background" (click)="closecreateArticle()"></div>
+    <div class="modal-content">
+        <div class="box">
+            <h3 class="title is-3">Article Title</h3>
+            <input class="input mb-3" type="text" placeholder="Article Title" [(ngModel)]="newArticleTitle">
+            <h3 class="title is-3 ">Article Content</h3>
+            <textarea class="textarea" placeholder="Article Content" [(ngModel)]="newArticleContent"></textarea>
+            <aside class="select-element">
+                <label for="category">Category</label>
+                <br>
+                <div class="select">
+                    <select id="category" [(ngModel)]="selectedCategoryId" name="category">
+                        <option value="null">Select Category</option>
+                        <option *ngFor="let category of categories()" [value]="category.id">
+                            {{ category.name }}
+                        </option>
+                    </select>
+                </div>
+            </aside>
+            <aside class="select-element">
+                <label for="assignedTo">Assigned To</label>
+                <br>
+                <div class="select">
+                    <select id="assignedTo" [(ngModel)]="selectedItSupporterId" name="assignedTo">
+                        <option value="null">Select Supporter</option>
+                        <option *ngFor="let itSupporter of itSupporters()" [value]="itSupporter.id">
+                            {{ itSupporter.firstName }} {{ itSupporter.lastName }}
+                        </option>
+                    </select>
+                </div>
+            </aside>
+            <label class="checkbox mt-3 is-flex is-align-items-center" style="gap: 0.5rem;">
+                <input type="checkbox" name="newArticleIsPublic" [(ngModel)]="newArticleIsPublic">
+                Is Public
+            </label>
+            <div class="mt-4">
+                <button class="button is-primary" (click)="createArticle()">Create Article</button>
+                <button class="button" (click)="closecreateArticle()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal" id="article-modal">
-  <div class="modal-background"></div>
-  <div class="modal-content">
-    <!-- Any other Bulma elements you want -->
-  </div>
-  <button class="modal-close is-large" aria-label="close"></button>
+    <div class="modal-background" (click)="closeArticle()"></div>
+    <div class="modal-content">
+        <div class="box">
+            <h3 class="title is-3">Article Title</h3>
+            <p>{{ selectedArticle()?.title }}</p>
+            <h3 class="title is-3">Article Content</h3>
+            <p>{{ selectedArticle()?.articleBody }}</p>
+            <h3 class="title is-3">Category</h3>
+            <p>{{ selectedArticle()?.categoryName }}</p>
+            <h3 class="title is-3">Created By</h3>
+            <p>{{ selectedArticle()?.createdByName }}</p>
+        </div>
+    </div>
 </div>
