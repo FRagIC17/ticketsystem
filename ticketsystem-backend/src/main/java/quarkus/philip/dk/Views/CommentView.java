@@ -1,4 +1,4 @@
-package quarkus.philip.dk;
+package quarkus.philip.dk.Views;
 
 import java.time.LocalDateTime;
 
