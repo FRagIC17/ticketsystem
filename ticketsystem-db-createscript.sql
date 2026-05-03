@@ -122,7 +122,7 @@ CREATE TABLE knowledge_base (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
     title VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) NOT NULL UNIQUE,
+    -- slug VARCHAR(255) NOT NULL UNIQUE,
     article_body TEXT NOT NULL,
     summary TEXT,
 
@@ -132,9 +132,7 @@ CREATE TABLE knowledge_base (
     created_by BIGINT NOT NULL,
     updated_by BIGINT NULL,
     
-    is_admin BOOLEAN DEFAULT FALSE,
-
-    is_published BOOLEAN DEFAULT TRUE,
+    is_public_for_user BOOLEAN DEFAULT FALSE,
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -154,7 +152,7 @@ CREATE TABLE knowledge_base (
         REFERENCES users(id),
 
     INDEX idx_kb_category (category_id),
-    INDEX idx_kb_slug (slug),
+    -- INDEX idx_kb_slug (slug),
     INDEX idx_kb_created_at (created_at),
     INDEX idx_kb_created_by (created_by),
     INDEX idx_kb_updated_by (updated_by)
@@ -222,6 +220,43 @@ SELECT
     c.updated_at
 FROM ticket_comments c
 JOIN users u ON c.created_by = u.id;
+
+-- =========================================
+-- KNOWLEDGEBASE VIEW
+-- =========================================
+CREATE OR REPLACE VIEW knowledge_base_view AS
+SELECT
+    kb.id,
+    kb.title,
+    kb.summary,
+    kb.article_body,
+    kb.tags,
+    kb.is_public_for_user,
+
+    kb.created_at,
+    kb.updated_at,
+
+    c.id AS category_id,
+    c.name AS category_name,
+
+    -- IMPORTANT: match expected column names
+    u1.id AS created_by,
+    CONCAT(u1.first_name, ' ', u1.last_name) AS created_by_name,
+
+    u2.id AS updated_by,
+    CONCAT(u2.first_name, ' ', u2.last_name) AS updated_by_name
+
+FROM knowledge_base kb
+JOIN ticket_category c 
+    ON kb.category_id = c.id
+
+JOIN users u1 
+    ON kb.created_by = u1.id
+
+LEFT JOIN users u2 
+    ON kb.updated_by = u2.id
+
+WHERE kb.deleted_at IS NULL;
 
 -- =========================================
 -- SEED DATA
