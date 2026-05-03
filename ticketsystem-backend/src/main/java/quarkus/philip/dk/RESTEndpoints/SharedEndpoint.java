@@ -3,7 +3,9 @@ package quarkus.philip.dk.RESTEndpoints;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Category;
@@ -11,6 +13,8 @@ import quarkus.philip.dk.KnowledgeBase;
 import quarkus.philip.dk.Priority;
 import quarkus.philip.dk.Status;
 import quarkus.philip.dk.User;
+import quarkus.philip.dk.DTOs.KnowledgeBaseDTO;
+import quarkus.philip.dk.Views.KnowledgeBaseView;
 
 @Path("/api")
 public class SharedEndpoint {
@@ -84,8 +88,8 @@ public class SharedEndpoint {
     @Path("/articles-for-user")
     public Response getArticlesForUser() {
         try {
-            TypedQuery<KnowledgeBase> query = em.createQuery("SELECT kb FROM KnowledgeBase kb WHERE kb.isAdmin = false",
-                    KnowledgeBase.class);
+            TypedQuery<KnowledgeBaseView> query = em.createQuery("SELECT kbv FROM KnowledgeBaseView kbv WHERE kbv.isPublicForUser = true",
+                    KnowledgeBaseView.class);
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
             // catch if no articles are found, return string "No articles found"
@@ -97,7 +101,7 @@ public class SharedEndpoint {
     @Path("/articles-for-supporter")
     public Response getArticlesForSupporter() {
         try {
-            TypedQuery<KnowledgeBase> query = em.createQuery("SELECT kb FROM KnowledgeBase kb", KnowledgeBase.class);
+            TypedQuery<KnowledgeBaseView> query = em.createQuery("SELECT kbv FROM KnowledgeBaseView kbv", KnowledgeBaseView.class);
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
             // catch if no articles are found, return string "No articles found"
@@ -105,5 +109,25 @@ public class SharedEndpoint {
         }
     }
 
-
+    @POST
+    @Transactional
+    @Path("/create-article")
+    public Response createArticle(KnowledgeBaseDTO articleDTO) {
+        try {
+            KnowledgeBase article = new KnowledgeBase();
+            article.title = articleDTO.title;
+            //article.slug = articleDTO.slug;
+            article.articleBody = articleDTO.articleBody;
+            article.categoryId = articleDTO.categoryId;
+            article.createdBy = articleDTO.createdBy;
+            article.createdAt = articleDTO.createdAt;
+            article.deletedAt = articleDTO.deletedAt;
+            article.isPublicForUser = articleDTO.isPublicForUser;
+            em.persist(article);
+            em.flush();
+            return Response.ok("Article created successfully").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to create article").build();
+        }
+    }
 }

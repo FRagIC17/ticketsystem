@@ -2,8 +2,6 @@ package quarkus.philip.dk.RESTEndpoints;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -20,12 +18,12 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Comment;
-import quarkus.philip.dk.CommentDTO;
-import quarkus.philip.dk.CommentView;
 import quarkus.philip.dk.Ticket;
-import quarkus.philip.dk.TicketDTO;
-import quarkus.philip.dk.TicketView;
-import quarkus.philip.dk.UpdateTicketDTO;
+import quarkus.philip.dk.DTOs.CommentDTO;
+import quarkus.philip.dk.DTOs.TicketDTO;
+import quarkus.philip.dk.DTOs.UpdateTicketDTO;
+import quarkus.philip.dk.Views.CommentView;
+import quarkus.philip.dk.Views.TicketView;
 
 @Path("/api/tickets")
 public class TicketEndpoint {
