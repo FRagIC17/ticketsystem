@@ -14,11 +14,15 @@ import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.KnowledgeBase;
 import quarkus.philip.dk.DTOs.KnowledgeBaseDTO;
 import quarkus.philip.dk.Views.KnowledgeBaseView;
+import quarkus.philip.dk.logging.EndpointActionLogger;
 
 @Path("/api/article")
 public class ArticleEndpoint {
     @Inject
     EntityManager em;
+
+    @Inject
+    EndpointActionLogger actionLogger;
 
     @GET
     @Path("/articles-for-user")
@@ -52,6 +56,8 @@ public class ArticleEndpoint {
     @Path("/create-article")
     public Response createArticle(KnowledgeBaseDTO articleDTO) {
         try {
+            actionLogger.logCreate("article",
+                    "title=" + articleDTO.title + ", categoryId=" + articleDTO.categoryId + ", createdBy=" + articleDTO.createdBy);
             KnowledgeBase article = new KnowledgeBase();
 
             article.title = articleDTO.title;
@@ -64,8 +70,11 @@ public class ArticleEndpoint {
             article.isPublicForUser = articleDTO.isPublicForUser;
             em.persist(article);
 
+            actionLogger.logCreateSuccess("article", "title=" + articleDTO.title);
+
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logCreateFailure("article", "title=" + articleDTO.title, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to create article").build();
         }
     }
@@ -75,6 +84,7 @@ public class ArticleEndpoint {
     @Path("/delete-article")
     public Response deleteArticle(@QueryParam("articleId") int id) {
         try {
+            actionLogger.logDelete("article", "articleId=" + id);
             Query query = em.createQuery("DELETE FROM KnowledgeBase k WHERE k.id = :id");
             query.setParameter("id", id);
             int deletedRows = query.executeUpdate();
@@ -83,8 +93,10 @@ public class ArticleEndpoint {
                         .entity("No article with id " + id + " found")
                         .build();
             }
+            actionLogger.logDeleteSuccess("article", "articleId=" + id);
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logDeleteFailure("article", "articleId=" + id, e);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to delete article: " + e.getMessage())
                     .build();

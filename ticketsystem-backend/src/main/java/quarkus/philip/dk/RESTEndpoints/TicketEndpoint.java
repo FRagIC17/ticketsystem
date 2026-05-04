@@ -1,7 +1,5 @@
 package quarkus.philip.dk.RESTEndpoints;
 
-import java.time.LocalDateTime;
-
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -13,23 +11,23 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import quarkus.philip.dk.Comment;
 import quarkus.philip.dk.Ticket;
-import quarkus.philip.dk.DTOs.CommentDTO;
 import quarkus.philip.dk.DTOs.TicketDTO;
 import quarkus.philip.dk.DTOs.UpdateTicketDTO;
-import quarkus.philip.dk.Views.CommentView;
 import quarkus.philip.dk.Views.TicketView;
+import quarkus.philip.dk.logging.EndpointActionLogger;
 
 @Path("/api/tickets")
 public class TicketEndpoint {
 
     @Inject
     EntityManager em;
+
+    @Inject
+    EndpointActionLogger actionLogger;
 
     @GET
     public Response getTickets() {
@@ -62,6 +60,7 @@ public class TicketEndpoint {
     @Path("/delete-ticket")
     public Response deleteTicket(@QueryParam("id") int id) {
         try {
+            actionLogger.logDelete("ticket", "ticketId=" + id);
             Query query = em.createQuery("DELETE FROM Ticket t WHERE t.id = :id");
             query.setParameter("id", id);
             int deletedRows = query.executeUpdate();
@@ -70,8 +69,10 @@ public class TicketEndpoint {
                         .entity("No ticket with id " + id + " found")
                         .build();
             }
+            actionLogger.logDeleteSuccess("ticket", "ticketId=" + id);
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logDeleteFailure("ticket", "ticketId=" + id, e);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to delete ticket: " + e.getMessage())
                     .build();
@@ -85,6 +86,9 @@ public class TicketEndpoint {
 
         Ticket ticket = new Ticket();
 
+        actionLogger.logCreate("ticket",
+            "title=" + dto.title + ", categoryId=" + dto.categoryId + ", createdBy=" + dto.createdByUserId);
+
         ticket.title = dto.title;
         ticket.description = dto.description;
 
@@ -97,6 +101,8 @@ public class TicketEndpoint {
 
         em.persist(ticket);
 
+        actionLogger.logCreateSuccess("ticket", "title=" + dto.title);
+
         return Response.ok().build();
     }
 
@@ -106,6 +112,8 @@ public class TicketEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateTicketStatus(UpdateTicketDTO dto) {
         try {
+            actionLogger.logUpdate("ticket-status",
+                    "ticketId=" + dto.ticketId + ", statusId=" + dto.statusId);
             Query query = em.createQuery("UPDATE Ticket t SET t.statusId = :status_id WHERE t.id = :id");
             query.setParameter("id", dto.ticketId);
             query.setParameter("status_id", dto.statusId);
@@ -117,8 +125,10 @@ public class TicketEndpoint {
                         .build();
             }
 
+            actionLogger.logUpdateSuccess("ticket-status", "ticketId=" + dto.ticketId);
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logUpdateFailure("ticket-status", "ticketId=" + dto.ticketId, e);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to update ticket status: " + e.getMessage())
                     .build();
@@ -131,6 +141,8 @@ public class TicketEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateTicketPriority(UpdateTicketDTO dto) {
         try {
+            actionLogger.logUpdate("ticket-priority",
+                    "ticketId=" + dto.ticketId + ", priorityId=" + dto.priorityId);
             Query query = em.createQuery("UPDATE Ticket t SET t.priorityId = :priority_id WHERE t.id = :id");
             query.setParameter("id", dto.ticketId);
             query.setParameter("priority_id", dto.priorityId);
@@ -142,8 +154,10 @@ public class TicketEndpoint {
                         .build();
             }
 
+            actionLogger.logUpdateSuccess("ticket-priority", "ticketId=" + dto.ticketId);
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logUpdateFailure("ticket-priority", "ticketId=" + dto.ticketId, e);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to update ticket priority: " + e.getMessage())
                     .build();
@@ -156,6 +170,8 @@ public class TicketEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response reassignTicket(UpdateTicketDTO dto) {
         try {
+            actionLogger.logUpdate("ticket-assignment",
+                    "ticketId=" + dto.ticketId + ", assignedTo=" + dto.assignedTo);
             Query query = em.createQuery("UPDATE Ticket t SET t.assignedTo = :assigned_to WHERE t.id = :id");
             query.setParameter("id", dto.ticketId);
             query.setParameter("assigned_to", dto.assignedTo);
@@ -165,8 +181,10 @@ public class TicketEndpoint {
                         .entity("No ticket with id " + dto.ticketId + " found")
                         .build();
             }
+            actionLogger.logUpdateSuccess("ticket-assignment", "ticketId=" + dto.ticketId);
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logUpdateFailure("ticket-assignment", "ticketId=" + dto.ticketId, e);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to reassign ticket: " + e.getMessage())
                     .build();

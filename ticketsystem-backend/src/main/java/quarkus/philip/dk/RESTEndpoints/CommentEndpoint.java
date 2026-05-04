@@ -14,12 +14,16 @@ import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Comment;
 import quarkus.philip.dk.DTOs.CommentDTO;
 import quarkus.philip.dk.Views.CommentView;
+import quarkus.philip.dk.logging.EndpointActionLogger;
 
 @Path("/api/comment")
 public class CommentEndpoint {
 
     @Inject
     EntityManager em;
+
+    @Inject
+    EndpointActionLogger actionLogger;
 
     @GET
     @Path("/comments-by-ticket-id")
@@ -40,6 +44,8 @@ public class CommentEndpoint {
     public Response addComment(CommentDTO dto) {
 
         try {
+            actionLogger.logCreate("comment",
+                    "ticketId=" + dto.ticketId + ", createdBy=" + dto.createdBy + ", supportComment=" + dto.isSupportComment);
             Comment comment = new Comment();
             comment.ticketId = dto.ticketId;
             comment.commentText = dto.commentText;
@@ -49,8 +55,11 @@ public class CommentEndpoint {
 
             em.persist(comment);
 
+            actionLogger.logCreateSuccess("comment", "ticketId=" + dto.ticketId);
+
             return Response.ok().build();
         } catch (Exception e) {
+            actionLogger.logCreateFailure("comment", "ticketId=" + dto.ticketId, e);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to add comment: " + e.getMessage())
                     .build();
