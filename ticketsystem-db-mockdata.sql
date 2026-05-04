@@ -1,6 +1,7 @@
 USE ticketsystem_db;
 
 INSERT INTO users (first_name, last_name, email, role) VALUES
+('default', 'user', 'defaultuser@default.com', 'USER'),
 ('Alice', 'Johnson', 'alice.johnson@company.com', 'USER'),
 ('Bob', 'Smith', 'bob.smith@company.com', 'USER'),
 ('Carol', 'Williams', 'carol.williams@company.com', 'USER'),
