@@ -94,6 +94,9 @@
             <p>{{ selectedArticle()?.categoryName }}</p>
             <h3 class="title is-3">Created By</h3>
             <p>{{ selectedArticle()?.createdByName }}</p>
+            <div class="mt-4" *ngIf="!sharedVariables.isUserView">
+                <button class="button" (click)="deleteArticle(selectedArticle()?.id)">Delete Article</button>
+            </div>
         </div>
     </div>
 </div>

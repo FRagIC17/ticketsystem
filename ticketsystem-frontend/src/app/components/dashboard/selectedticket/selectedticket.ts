@@ -41,7 +41,7 @@ export class Selectedticket {
         supporters: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/it-supporters`),
         statuses: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/statuses`),
         priorities: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/priorities`),
-        comments: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets/comments-by-ticket-id?ticketId=${this.route.snapshot.paramMap.get('id')}`)
+        comments: this.http.get<any[]>(`${SharedVariables.baseUrl}/api/comment/comments-by-ticket-id?ticketId=${this.route.snapshot.paramMap.get('id')}`)
       }).subscribe({
         next: ({ users, supporters, statuses, priorities, comments }) => {
           this.users.set(users);
@@ -135,7 +135,7 @@ export class Selectedticket {
       return;
     }
 
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets/comments-by-ticket-id?ticketId=${currentTicket.id}`)
+    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/comment/comments-by-ticket-id?ticketId=${currentTicket.id}`)
       .subscribe({
         next: (response) => {
           this.comments.set(response);
@@ -165,7 +165,7 @@ export class Selectedticket {
       isSupportComment: isSupportComment
     };
 
-    this.http.post(`${SharedVariables.baseUrl}/api/tickets/add-comment`, payload)
+    this.http.post(`${SharedVariables.baseUrl}/api/comment/add-comment`, payload)
       .subscribe({
         next: (response) => {
           console.log('Comment added successfully:');

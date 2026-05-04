@@ -3,7 +3,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedVariables } from '../../SharedVariables/SharedVariables';
-import { error } from 'console';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,9 +29,18 @@ export class Knowledgebase {
 
   itSupporters = signal<any[]>([]);
   categories = signal<any[]>([]);
-  newArticleTitle: any;
-  newArticleSlug: any;
-  newArticleContent: any;
+  newArticleTitle = '';
+  newArticleSlug = '';
+  newArticleContent = '';
+
+  private resetCreateArticleForm() {
+    this.newArticleTitle = '';
+    this.newArticleSlug = '';
+    this.newArticleContent = '';
+    this.selectedCategoryId = null;
+    this.selectedItSupporterId = null;
+    this.newArticleIsPublic = true;
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -42,7 +50,7 @@ export class Knowledgebase {
   }
 
   loadArticlesForUser() {
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/articles-for-user`).subscribe({
+    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/article/articles-for-user`).subscribe({
       next: (articles) => {
         this.articlesForUser.set(articles);
       },
@@ -53,7 +61,7 @@ export class Knowledgebase {
   }
 
   loadArticlesForSupporter() {
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/articles-for-supporter`).subscribe({
+    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/article/articles-for-supporter`).subscribe({
       next: (articles) => {
         this.articlesForSupporter.set(articles);
       },
@@ -89,12 +97,13 @@ export class Knowledgebase {
     // Implement the logic to open the article, e.g., navigate to an article detail page or open a modal
     this.loadItSupporters();
     this.loadCategories();
-    this.newArticleIsPublic = true;
+    this.resetCreateArticleForm();
     document.getElementById('create-article-modal')?.classList.add('is-active');
   }
 
   closecreateArticle() {
     // Implement the logic to close the article, e.g., navigate back or close a modal
+    this.resetCreateArticleForm();
     document.getElementById('create-article-modal')?.classList.remove('is-active');
   }
 
@@ -110,7 +119,8 @@ export class Knowledgebase {
   }
 
   createArticle() {
-    const payload = {     title: this.newArticleTitle,
+    const payload = {     
+      title: this.newArticleTitle,
       slug: this.newArticleSlug,
       articleBody: this.newArticleContent,
       categoryId: this.selectedCategoryId,
@@ -120,15 +130,30 @@ export class Knowledgebase {
       isPublicForUser: this.newArticleIsPublic
     };
 
-    this.http.post<any[]>(`${SharedVariables.baseUrl}/api/create-article`, payload).subscribe({
-      next: (articles) => {
-        console.log('Articles loaded successfully:', articles);
-        this.router.navigate(['/knowledge-base']);
+    this.http.put<any[]>(`${SharedVariables.baseUrl}/api/article/create-article`, payload).subscribe({
+      next: () => {
+        this.resetCreateArticleForm();
+        document.getElementById('create-article-modal')?.classList.remove('is-active');
+        
+        this.loadArticlesForUser();
+        this.loadArticlesForSupporter();
       },
       error: (err) => {
         console.error('Failed to load articles:', err);
       }
     });
+  }
 
+  deleteArticle(articleId: number) {
+    this.http.delete(`${SharedVariables.baseUrl}/api/article/delete-article?articleId=${articleId}`).subscribe({
+      next: () => {
+        document.getElementById('article-modal')?.classList.remove('is-active');
+        this.loadArticlesForUser();
+        this.loadArticlesForSupporter();
+      },
+      error: (err) => {
+        console.error('Failed to delete article:', err);
+      }
+    });
   }
 }

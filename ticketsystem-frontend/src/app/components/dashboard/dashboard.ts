@@ -70,7 +70,7 @@ export class Dashboard {
 
     console.log('Searching for:', term);
 
-    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/tickets/search?search=${encodeURIComponent(term)}`)
+    this.http.get<any[]>(`${SharedVariables.baseUrl}/api/dashboard/search?search=${encodeURIComponent(term)}`)
       .subscribe({
         next: data => {
           this.tickets.set(data);
