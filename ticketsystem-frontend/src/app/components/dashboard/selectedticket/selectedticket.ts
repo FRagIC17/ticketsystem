@@ -170,7 +170,7 @@ export class Selectedticket {
         next: (response) => {
           console.log('Comment added successfully:');
           this.newComment = '';
-          this.loadSelectedTicket(); // Refresh ticket to show new comment
+          this.loadComments(); // Refresh comments to show the new comment
         },
         error: (err) => {
           console.error('Failed to add comment:', err);
