@@ -44,24 +44,6 @@ public class TicketEndpoint {
     }
 
     @GET
-    @Path("/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTicketsBySearchTerm(@QueryParam("search") String searchTerm) {
-        System.out.println("Received search term: " + searchTerm);
-        try {
-            TypedQuery<TicketView> query = em
-                    .createQuery("SELECT tv FROM TicketView tv WHERE LOWER(tv.title) LIKE LOWER(:search_term)" +
-                            "OR LOWER(tv.category) LIKE LOWER(:search_term)" +
-                            "OR LOWER(tv.status) LIKE LOWER(:search_term)" +
-                            "OR LOWER(tv.priority) LIKE LOWER(:search_term)", TicketView.class);
-            query.setParameter("search_term", "%" + searchTerm + "%");
-            return Response.ok(query.getResultList()).build();
-        } catch (Exception e) {
-            return Response.ok("No tickets found for search term: " + searchTerm).build();
-        }
-    }
-
-    @GET
     @Path("/ticket-by-id")
     public Response getTicketById(@QueryParam("id") int id) {
         try {
@@ -187,42 +169,6 @@ public class TicketEndpoint {
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Failed to reassign ticket: " + e.getMessage())
-                    .build();
-        }
-    }
-
-    @GET
-    @Path("/comments-by-ticket-id")
-    public Response getCommentsByTicketId(@QueryParam("ticketId") Long ticketId) {
-        try {
-            TypedQuery<CommentView> query = em.createQuery("SELECT c FROM CommentView c WHERE c.ticketId = :ticket_id", CommentView.class);
-            query.setParameter("ticket_id", ticketId);
-            return Response.ok(query.getResultList()).build();
-        } catch (Exception e) {
-            return Response.ok("No comments found for ticket with id: " + ticketId).build();
-        }
-    }
-
-
-    @POST
-    @Transactional
-    @Path("/add-comment")
-    public Response addComment(CommentDTO dto) {
-
-        try {
-            Comment comment = new Comment();
-            comment.ticketId = dto.ticketId;
-            comment.commentText = dto.commentText;
-            comment.createdBy = dto.createdBy;
-            comment.isSupportComment = dto.isSupportComment;
-            comment.createdAt = LocalDateTime.now();
-
-            em.persist(comment);
-
-            return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Failed to add comment: " + e.getMessage())
                     .build();
         }
     }

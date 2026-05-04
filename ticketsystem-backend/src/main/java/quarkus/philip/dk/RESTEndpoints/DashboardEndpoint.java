@@ -5,8 +5,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import quarkus.philip.dk.Ticket;
+import quarkus.philip.dk.Views.TicketView;
 
 @Path("/api/dashboard")
 public class DashboardEndpoint {
@@ -15,15 +18,20 @@ public class DashboardEndpoint {
     EntityManager em;
     
     @GET
-    @Path("/latest-5-tickets")
-    public Response getLatest5Tickets() {
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTicketsBySearchTerm(@QueryParam("search") String searchTerm) {
+        System.out.println("Received search term: " + searchTerm);
         try {
-            TypedQuery<Ticket> query = em.createQuery("SELECT t FROM Ticket t ORDER BY t.createdAt DESC", Ticket.class);
-            query.setMaxResults(5);
+            TypedQuery<TicketView> query = em
+                    .createQuery("SELECT tv FROM TicketView tv WHERE LOWER(tv.title) LIKE LOWER(:search_term)" +
+                            "OR LOWER(tv.category) LIKE LOWER(:search_term)" +
+                            "OR LOWER(tv.status) LIKE LOWER(:search_term)" +
+                            "OR LOWER(tv.priority) LIKE LOWER(:search_term)", TicketView.class);
+            query.setParameter("search_term", "%" + searchTerm + "%");
             return Response.ok(query.getResultList()).build();
         } catch (Exception e) {
-            //catch if no tickets are found, return string "No tickets found"
-            return Response.ok("No tickets found").build();
+            return Response.ok("No tickets found for search term: " + searchTerm).build();
         }
     }
 }
