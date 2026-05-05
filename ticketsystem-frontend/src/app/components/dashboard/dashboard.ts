@@ -26,6 +26,8 @@ export class Dashboard {
   //selectedPriority: string = '';
   searchTerm: string = '';
 
+  isBreached = false;
+
   isLoading = true;
 
   private http = inject(HttpClient);
@@ -142,6 +144,36 @@ export class Dashboard {
     if (hours) parts.push(`${hours}h`);
     if (minutes) parts.push(`${minutes}m`);
     return parts.length ? parts.join(' ') : '0m';
+  }
+
+  getSLAWindow(priority: string): number {
+    const p = (priority || '').trim().toLowerCase();
+    switch (p) {
+      case 'critical':
+        return 4;
+      case 'high':
+        return 8;
+      case 'medium':
+        return 24;
+      case 'low':
+        return 72;
+      default:
+        return 24;
+    }
+  }
+
+  getCalculatedSLADueDate(ticket: any): Date | null {
+    if (!ticket?.createdAt) return null;
+    const created = new Date(ticket.createdAt);
+    if (isNaN(created.getTime())) return null;
+    const window = this.getSLAWindow(ticket?.priority);
+    return new Date(created.getTime() + window * 3600000);
+  }
+
+  isTicketBreached(ticket: any): boolean {
+    const dueDate = this.getCalculatedSLADueDate(ticket);
+    if (!dueDate) return false;
+    return dueDate.getTime() < Date.now();
   }
 
 

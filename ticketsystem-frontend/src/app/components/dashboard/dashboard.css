@@ -122,3 +122,24 @@
     align-items:center;
     justify-content:center;
 }
+
+.ticket-table .ticket-title-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.ticket-table .ticket-title {
+    margin: 0;
+    max-width: 240px;
+}
+
+.ticket-table .breach-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: #dc2626;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+    flex: 0 0 auto;
+}

@@ -72,35 +72,41 @@
 				</div>
 			</div>
 
-			<div id="ticket-main" class="form-box is-flex is-justify-content-space-between" *ngFor="let ticket of tickets()"
-				(click)="onTicketClick(ticket)" style="cursor: pointer;">
-				<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
-
-				<div class="is-flex">
-					<p>Category:</p>
-					<div class="ml-4">
-						{{ ticket.category }}
-					</div>
-				</div>
-
-				<div class="is-flex">
-					<p>Status:</p>
-					<div class="tag ml-4" [style.backgroundColor]="getStatusStyles(ticket).background"
-						[style.borderColor]="getStatusStyles(ticket).border">
-						{{ ticket.status }}
-					</div>
-				</div>
-
-				<div class="is-flex">
-					<p>Priority:</p>
-					<div class="tag ml-4" [style.backgroundColor]="getPriorityStyles(ticket).background"
-						[style.borderColor]="getPriorityStyles(ticket).border">
-						{{ ticket.priority }}
-					</div>
-				</div>
-
-				<p>Created At: {{ ticket.createdAt | date }}</p>
-			</div>
+			<table class="form-box table is-fullwidth is-hoverable ticket-table">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Category</th>
+						<th>Status</th>
+						<th>Priority</th>
+						<th>Created At</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let ticket of tickets()" class="ticket-row" (click)="onTicketClick(ticket)" style="height: 8vh;">
+						<td>
+							<div class="ticket-title-wrap">
+								<span *ngIf="isTicketBreached(ticket) && !sharedVariables.isUserView" class="breach-dot" aria-label="SLA breached" title="SLA breached"></span>
+								<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
+							</div>
+						</td>
+						<td>{{ ticket.category }}</td>
+						<td>
+							<div class="tag" [style.backgroundColor]="getStatusStyles(ticket).background"
+								[style.borderColor]="getStatusStyles(ticket).border">
+								{{ ticket.status }}
+							</div>
+						</td>
+						<td>
+							<div class="tag" [style.backgroundColor]="getPriorityStyles(ticket).background"
+								[style.borderColor]="getPriorityStyles(ticket).border">
+								{{ ticket.priority }}
+							</div>
+						</td>
+						<td>{{ ticket.createdAt | date }}</td>
+					</tr>
+				</tbody>
+			</table>
 
 		</div>
 	</div>
