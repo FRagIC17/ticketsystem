@@ -70,10 +70,30 @@ standard dependencies that should be implementet:
 # bulma
 
 https://bulma.io/documentation/start/installation/
-
+d
 css import: @import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
 
-# Download MySQL
+# Mysql workbench + server
+## Mysql server
+- if it doesnt start the download immediately click on the blue text saying "no thanks, just start my download"
+
+for the mysql server, go to this link: https://dev.mysql.com/downloads/ and choose the msi version for the easiest download 
+![alt text](staticassets/mysqlserverdownload.png)
+
+when downloaded go through these steps:
+- choose a directory, for simplicity, use standard route it gives
+- for the networking, if your changing anything remember to write the changes down and where, will be important for later
+- set a root password, this is to access the db server from your root user. You can add another user, but remember to give them the necessary permissions
+- let the server have full permissions for your files unless you know why not to
+- no need to create sample databases, there is a create + mock script for the whole database
+- execute the configuration
+
+## Download MySQL workbench
 download the latest mysql workbench
 
-https://dev.mysql.com/downloads/workbench/
+go to this link https://dev.mysql.com/downloads/ and choose the mysql workbench and begin downloading the msi version for the easiest download
+![alt text](staticassets/mysqlworkbenchdownload.png)
+when downloaded go through these steps:
+- choose directory, i will be using the standard route it gives
+- download the complete package, unless you want to either save space or know you only need specific features
+- finish the install
