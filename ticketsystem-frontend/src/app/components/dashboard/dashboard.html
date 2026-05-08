@@ -86,7 +86,7 @@
 					<tr *ngFor="let ticket of tickets()" class="ticket-row" (click)="onTicketClick(ticket)" style="height: 8vh;">
 						<td>
 							<div class="ticket-title-wrap">
-								<span *ngIf="isTicketBreached(ticket) && !sharedVariables.isUserView" class="breach-dot" aria-label="SLA breached" title="SLA breached"></span>
+								<span *ngIf="isTicketBreached(ticket) && !sharedVariables.isUserView" class="breach-dot" title="SLA breached"></span>
 								<h2 class="ticket-title" [title]="ticket.title">{{ ticket.title }}</h2>
 							</div>
 						</td>

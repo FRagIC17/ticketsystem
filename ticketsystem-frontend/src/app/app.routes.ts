@@ -9,19 +9,18 @@ import { Contact } from './components/contact/contact';
 import { About } from './components/about/about';
 
 export const routes: Routes = [
-    {path: '', component: MainLayout, children: [
-        {path: '', component: Dashboard},
-        {path: 'tickets/:id', component: Selectedticket},
-        {path: 'knowledge-base', component: Knowledgebase},
-        {path: 'create-ticket', component: Createticket},
-        {path: 'contact', component: Contact},
-        {path: 'about', component: About}
-    ]},
+    {
+        path: '', loadComponent() { return import('./layout/main-layout/main-layout').then(m => m.MainLayout); }, 
+        children: 
+        [ 
+            { path: '', loadComponent() { return import('./components/dashboard/dashboard').then(m => m.Dashboard); } },
+            { path: 'tickets/:id', loadComponent() { return import('./components/dashboard/selectedticket/selectedticket').then(m => m.Selectedticket); } },
+            { path: 'knowledge-base', loadComponent() { return import('./components/knowledgebase/knowledgebase').then(m => m.Knowledgebase); } },
+            { path: 'create-ticket', loadComponent() { return import('./components/dashboard/createticket/createticket').then(m => m.Createticket); } },
+            { path: 'contact', loadComponent() { return import('./components/contact/contact').then(m => m.Contact); } },
+            { path: 'about', loadComponent() { return import('./components/about/about').then(m => m.About); } }
+        ]
+    },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
 
 export class AppRoutingModule { }
