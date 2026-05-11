@@ -1,3 +1,16 @@
+# About the Ticket System
+This software is a centralized helpdesk platform built to manage support requests from creation to resolution. It gives teams one place to register issues, prioritize work, track progress, and document outcomes.
+
+The goal is simple: reduce response time, improve communication between users and IT support, and make every ticket fully traceable.
+what the system can do:
+Create and manage support tickets with title, description, category, status, and priority.
+Sort and filter tickets by status and priority from the dashboard.
+Track each ticket through its lifecycle: Open, In Progress, Resolved, and Closed.
+Show SLA performance so teams can quickly see if deadlines are being met or breached.
+Open detailed ticket views with comments, assignment information, and timeline fields.
+Update ticket status directly from the selected ticket view.
+
+
 # nvm install:
 https://github.com/coreybutler/nvm-windows?tab=readme-ov-file
 scroll down to download now link:
