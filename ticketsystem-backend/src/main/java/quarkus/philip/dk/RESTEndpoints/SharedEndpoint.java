@@ -3,18 +3,13 @@ package quarkus.philip.dk.RESTEndpoints;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import quarkus.philip.dk.Category;
-import quarkus.philip.dk.KnowledgeBase;
 import quarkus.philip.dk.Priority;
 import quarkus.philip.dk.Status;
 import quarkus.philip.dk.User;
-import quarkus.philip.dk.DTOs.KnowledgeBaseDTO;
-import quarkus.philip.dk.Views.KnowledgeBaseView;
 
 @Path("/api")
 public class SharedEndpoint {
