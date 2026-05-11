@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedVariables } from '../../SharedVariables/SharedVariables';
@@ -7,7 +7,7 @@ import { SharedVariables } from '../../SharedVariables/SharedVariables';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, HttpClientModule, RouterLinkActive],
+  imports: [CommonModule, HttpClientModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })

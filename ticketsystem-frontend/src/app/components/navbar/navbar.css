@@ -1,4 +1,11 @@
  :host {
   display: block;
   height: 100%;
- }
+}
+
+.navbar-item--active {
+  background-color: #3273dc;
+  border-left: 4px solid #2366d1;
+  color: #ffffff;
+  font-weight: 600;
+}
