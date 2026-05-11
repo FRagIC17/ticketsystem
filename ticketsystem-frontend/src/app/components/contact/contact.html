@@ -6,7 +6,7 @@
             <div class="column is-one-fifth-desktop is-half-tablet is-full-mobile" *ngFor="let itSupport of itSupporters()">
                 <article class="is-flex is-flex-direction-column is-align-items-center mb-5">
                     <div class="form-box has-text-centered">
-                        <img src="5100711-200.ico" alt="user image">
+                        <img src="5100711-200.ico" alt="user image" fetchpriority=high>
                         <p class="is-5 has-text-weight-semibold">{{ itSupport.firstName }} {{ itSupport.lastName }}</p>
                         <p>Email: {{ itSupport.email }}</p>
                     </div>

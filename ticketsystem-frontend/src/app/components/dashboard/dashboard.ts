@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SharedVariables } from '../../SharedVariables/SharedVariables';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { get } from 'http';
 import { forkJoin } from 'rxjs';
 import { Sla } from './sla/sla';
 
@@ -79,7 +78,7 @@ export class Dashboard {
         },
         error: err => console.error(err)
       });
-    
+
   }
 
   // Helper to safely get the value for [value] binding

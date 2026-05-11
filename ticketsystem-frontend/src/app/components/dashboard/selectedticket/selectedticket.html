@@ -1,7 +1,7 @@
 <section class="selected-ticket-page" *ngIf="ticket() as currentTicket; else noTicket">
     <div class="is-flex is-justify-content-space-between mb-4">
         <div>
-            <p class="mb-3"><a href="/">&larr; Go Back</a></p>
+            <p class="mb-3"><a href="/dashboard">&larr; Go Back</a></p>
             <h1 class="title is-3 selected-ticket-title">{{ currentTicket.title }}</h1>
         </div>
         <div>
@@ -88,7 +88,7 @@
                 </section>
             </section>
 
-            <section class="form-box">
+            <section class="form-box" *ngIf="!sharedVariables.isUserView">
                 <p class="has-text-weight-semibold" for="status">Update Status</p>
                 <div class="select mb-3">
                     <select [(ngModel)]="selectedStatusId" name="status">
@@ -101,7 +101,7 @@
                 <button class="button mb-3" (click)="updateTicketStatus()">Update Status</button>
             </section>
 
-            <section class="form-box">
+            <section class="form-box" *ngIf="!sharedVariables.isUserView">
                 <p class="has-text-weight-semibold" for="priority">Update Priority</p>
                 <div class="select mb-3">
                     <select [(ngModel)]="selectedPriorityId" name="priority">
