@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule, NgIf } from '@angular/common';
+import { Router, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedVariables } from '../../SharedVariables/SharedVariables';
 
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
@@ -17,26 +17,5 @@ export class Navbar {
 
   switchToUserView() {
     this.sharedVariables.isUserView = !this.sharedVariables.isUserView;
-  }
-
-  myDashboard() {
-    this.router.navigate(['/']);
-  }
-
-  createTicket() {
-    this.router.navigate(['/create-ticket']);
-  }
-
-  myKnowledgeBase() {
-    // Implement navigation to Knowledge Base page
-    this.router.navigate(['/knowledge-base']);
-  }
-
-  Contact() {
-    this.router.navigate(['/contact']);
-  }
-
-  about() {
-    this.router.navigate(['/about']);
   }
 }

@@ -9,21 +9,21 @@
 
   <div class="navbar-menu is-active is-flex is-flex-direction-column">
     <div class="navbar-start">
-      <a class="navbar-item " (click)="myDashboard()">
+      <a class="navbar-item " href="/dashboard">
         Dashboard
       </a>
 
-      <a class="navbar-item" (click)="createTicket()">
+      <a class="navbar-item" href="/create-ticket">
         Create Ticket
       </a>
 
-      <a class="navbar-item" (click)="myKnowledgeBase()">
+      <a class="navbar-item" href="/knowledge-base">
         Knowledge Base
       </a>
-      <a class="navbar-item" (click)="Contact()">
+      <a class="navbar-item" href="/contact">
         Contact
       </a>
-      <a class="navbar-item" (click)="about()">
+      <a class="navbar-item" href="/about">
         About
       </a>
     </div>
@@ -32,10 +32,8 @@
     <button class="button" (click)="switchToUserView()" *ngIf="!sharedVariables.isUserView">
       switch to user view
     </button>
-    <button>
-        <button class="button" (click)="switchToUserView()" *ngIf="sharedVariables.isUserView">
-            switch to supporter view
-        </button>
+    <button class="button" (click)="switchToUserView()" *ngIf="sharedVariables.isUserView">
+        switch to supporter view
     </button>
   </div>
 </nav>

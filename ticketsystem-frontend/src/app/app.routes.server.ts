@@ -6,6 +6,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender
   },
   {
+    path: 'dashboard',
+    renderMode: RenderMode.Prerender
+  },
+  {
     path: 'knowledge-base',
     renderMode: RenderMode.Prerender
   },
@@ -23,6 +27,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'tickets/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: '**',
     renderMode: RenderMode.Server
   }
 ];
