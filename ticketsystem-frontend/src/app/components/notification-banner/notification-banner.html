@@ -1,0 +1,9 @@
+<div class="notification-stack" *ngIf="currentNotification() as notification">
+  <section class="notification-toast" [class.notification-toast--success]="notification.type === 'success'" [class.notification-toast--error]="notification.type === 'error'" [class.notification-toast--info]="notification.type === 'info'">
+    <div class="notification-toast__copy">
+      <p class="notification-toast__title">{{ notification.title }}</p>
+      <p class="notification-toast__detail" *ngIf="notification.detail">{{ notification.detail }}</p>
+    </div>
+    <button type="button" class="notification-toast__close" (click)="close()" aria-label="Dismiss notification">x</button>
+  </section>
+</div>

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-selectedticket',
@@ -20,6 +21,7 @@ export class Selectedticket {
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
   public sharedVariables = inject(SharedVariables);
+  private notifications = inject(NotificationService);
 
   ticket = signal<any>(null);
   newComment: string = '';
@@ -70,12 +72,12 @@ export class Selectedticket {
   updateTicketStatus() {
     const currentTicket = this.ticket();
     if (!currentTicket) {
-      console.error('No ticket loaded to update status for');
+      this.notifications.error('Status update blocked', 'No ticket is loaded yet.');
       return;
     }
 
     if (!this.selectedStatusId) {
-      console.error('No status selected for update');
+      this.notifications.error('Status update blocked', 'Choose a new status before clicking Update Status.');
       return;
     }
 
@@ -89,10 +91,14 @@ export class Selectedticket {
     this.http.put(`${SharedVariables.baseUrl}/api/tickets/update-ticket-status`, payload)
       .subscribe({
         next: (response) => {
+          const selectedStatus = this.statuses().find(status => Number(status?.id) === Number(this.selectedStatusId));
+          const statusName = selectedStatus?.name ?? 'the selected status';
+          this.notifications.success('Ticket status updated', `"${currentTicket.title}" is now ${statusName}.`);
           this.loadSelectedTicket(); // Refresh ticket to show updated status
         },
         error: (err) => {
           console.error('Failed to update ticket status:', err);
+          this.notifications.error('Status update failed', `Could not update "${currentTicket.title}".`);
         }
       });
   }
@@ -100,12 +106,12 @@ export class Selectedticket {
   updateTicketPriority() {
     const currentTicket = this.ticket();
     if (!currentTicket) {
-      console.error('No ticket loaded to update priority for');
+      this.notifications.error('Priority update blocked', 'No ticket is loaded yet.');
       return;
     }
 
     if (!this.selectedPriorityId) {
-      console.error('No priority selected for update');
+      this.notifications.error('Priority update blocked', 'Choose a new priority before clicking Update Priority.');
       return;
     }
 
@@ -119,10 +125,14 @@ export class Selectedticket {
     this.http.put(`${SharedVariables.baseUrl}/api/tickets/update-ticket-priority`, payload)
       .subscribe({
         next: (response) => {
+          const selectedPriority = this.priorities().find(priority => Number(priority?.id) === Number(this.selectedPriorityId));
+          const priorityName = selectedPriority?.name ?? 'the selected priority';
+          this.notifications.success('Ticket priority updated', `"${currentTicket.title}" is now ${priorityName}.`);
           this.loadSelectedTicket(); // Refresh ticket to show updated priority
         },
         error: (err) => {
           console.error('Failed to update ticket priority:', err);
+          this.notifications.error('Priority update failed', `Could not update "${currentTicket.title}".`);
         }
       });
   }
@@ -170,10 +180,12 @@ export class Selectedticket {
         next: (response) => {
           console.log('Comment added successfully:');
           this.newComment = '';
+          this.notifications.success('Comment added', `Your comment was added to "${currentTicket.title}".`);
           this.loadComments(); // Refresh comments to show the new comment
         },
         error: (err) => {
           console.error('Failed to add comment:', err);
+          this.notifications.error('Comment failed', `Could not add a comment to "${currentTicket.title}".`);
         }
       });
   }
@@ -223,10 +235,12 @@ export class Selectedticket {
       .subscribe({
         next: (response) => {
           console.log('Ticket deleted successfully:', response);
+          this.notifications.success('Ticket deleted', `"${currentTicket.title}" was removed.`);
           window.history.back(); // Go back to previous page after deletion
         },
         error: (err) => {
           console.error('Failed to delete ticket:', err);
+          this.notifications.error('Delete failed', `Could not delete "${currentTicket.title}".`);
         }
       });
   }
@@ -239,7 +253,7 @@ export class Selectedticket {
     }
 
     if (!this.selectedItSupporterId) {
-      console.error('No supporter selected for reassignment');
+      this.notifications.error('Reassignment blocked', 'Pick a support person before clicking Reassign.');
       return;
     }
 
@@ -254,10 +268,14 @@ export class Selectedticket {
       .subscribe({
         next: (response) => {
           console.log('Ticket reassigned successfully:', response);
+          const selectedSupporter = this.supporters().find(supporter => Number(supporter?.id) === Number(this.selectedItSupporterId));
+          const supporterName = selectedSupporter ? `${selectedSupporter.firstName} ${selectedSupporter.lastName}` : 'the selected supporter';
+          this.notifications.success('Ticket reassigned', `"${currentTicket.title}" is now assigned to ${supporterName}.`);
           this.loadSelectedTicket(); // Refresh ticket to show new assignment
         },
         error: (err) => {
           console.error('Failed to reassign ticket:', err);
+          this.notifications.error('Reassignment failed', `Could not reassign "${currentTicket.title}".`);
         }
       });
   }

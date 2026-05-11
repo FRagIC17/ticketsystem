@@ -1,9 +1,10 @@
+import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedVariables } from '../../SharedVariables/SharedVariables';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-knowledgebase',
@@ -17,6 +18,7 @@ export class Knowledgebase {
   private platformId = inject(PLATFORM_ID);
   public sharedVariables = inject(SharedVariables);
   private router = inject(Router);
+  private notifications = inject(NotificationService);
 
   articlesForUser = signal<any[]>([]);
   articlesForSupporter = signal<any[]>([]);
@@ -119,6 +121,7 @@ export class Knowledgebase {
   }
 
   createArticle() {
+    const articleTitle = this.newArticleTitle.trim();
     const payload = {     
       title: this.newArticleTitle,
       slug: this.newArticleSlug,
@@ -135,24 +138,31 @@ export class Knowledgebase {
         this.resetCreateArticleForm();
         document.getElementById('create-article-modal')?.classList.remove('is-active');
         
+        this.notifications.success('Article saved', `"${articleTitle}" is now available in the knowledge base.`);
         this.loadArticlesForUser();
         this.loadArticlesForSupporter();
       },
       error: (err) => {
         console.error('Failed to load articles:', err);
+        this.notifications.error('Article save failed', `Could not save "${articleTitle}".`);
       }
     });
   }
 
   deleteArticle(articleId: number) {
+    const currentArticle = this.selectedArticle();
+    const articleTitle = currentArticle?.title ?? 'Article';
+
     this.http.delete(`${SharedVariables.baseUrl}/api/article/delete-article?articleId=${articleId}`).subscribe({
       next: () => {
         document.getElementById('article-modal')?.classList.remove('is-active');
+        this.notifications.success('Article deleted', `"${articleTitle}" was removed.`);
         this.loadArticlesForUser();
         this.loadArticlesForSupporter();
       },
       error: (err) => {
         console.error('Failed to delete article:', err);
+        this.notifications.error('Delete failed', `Could not delete "${articleTitle}".`);
       }
     });
   }

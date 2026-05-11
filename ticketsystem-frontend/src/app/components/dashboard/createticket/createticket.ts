@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, inject, PLATFORM_ID, signal } from '@angular/core';
-import { Navbar } from '../../navbar/navbar';
+import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SharedVariables } from '../../../SharedVariables/SharedVariables';
 import { forkJoin } from 'rxjs';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-createticket',
@@ -19,6 +19,7 @@ export class Createticket {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   public sharedVariables = inject(SharedVariables);
+  private notifications = inject(NotificationService);
 
   title: string = '';
   description: string = '';
@@ -85,7 +86,7 @@ export class Createticket {
     }
 
     if (!this.title || !this.description || !this.selectedStatusId || !this.selectedPriorityId || !this.selectedCategoryId || !this.selectedUserId || !this.selectedItSupporterId) {
-      alert('Please fill in all fields before submitting the ticket.');
+      this.notifications.error('Ticket not submitted', 'Please fill in all fields before submitting the ticket.');
       return;
     }
 
@@ -104,15 +105,17 @@ export class Createticket {
     this.http.post(`${SharedVariables.baseUrl}/api/tickets/create-ticket`, payload).subscribe({
       next: response => {
         console.log('Ticket created successfully:', response);
-        this.router.navigate(['/']);
+        this.notifications.success('Ticket created', `"${this.title}" was added to the dashboard.`);
+        this.router.navigate(['/dashboard']);
       },
       error: err => {
         console.error('Failed to create ticket:', err);
+        this.notifications.error('Ticket creation failed', `Could not create "${this.title}".`);
       }
     });
   }
 
   goBack() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/dashboard']);
   }
 }
