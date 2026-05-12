@@ -171,6 +171,10 @@ export class Dashboard {
 
   isTicketBreached(ticket: any): boolean {
     const dueDate = this.getCalculatedSLADueDate(ticket);
+    if (ticket?.status) {
+      const status = (ticket.status || '').trim().toLowerCase();
+      if (status === 'resolved' || status === 'closed') return false;
+    }
     if (!dueDate) return false;
     return dueDate.getTime() < Date.now();
   }

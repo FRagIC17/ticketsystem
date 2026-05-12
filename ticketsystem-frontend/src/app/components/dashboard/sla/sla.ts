@@ -48,6 +48,8 @@ export class Sla {
     if (!all || !Array.isArray(all)) return 0;
     const now = Date.now();
     return all.filter(t => {
+      const status = (t?.status || '').trim().toLowerCase();
+      if (status === 'resolved' || status === 'closed') return false;
       const due = this.getCalculatedSLADueDate(t);
       if (!due) return false;
       return due.getTime() < now;
